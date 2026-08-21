@@ -104,6 +104,7 @@ if (typeof module !== "undefined" && module.exports) {
   const keysToggleWrap = document.getElementById("keys-toggle-wrap");
   const keysToggle = document.getElementById("transliterate-keys");
   const mappingTableEl = document.getElementById("mapping-table");
+  const charCount = document.getElementById("char-count");
 
   function currentMode() {
     return modeJson.checked ? "json" : "text";
@@ -156,7 +157,29 @@ if (typeof module !== "undefined" && module.exports) {
     input.value = "";
     output.value = "";
     hideError();
+    updateCharCount();
     input.focus();
+  });
+
+  // --- Purely cosmetic UI sugar below; none of it touches convert/transliterate logic. ---
+
+  function updateCharCount() {
+    if (!charCount) return;
+    const n = input.value.length;
+    charCount.textContent = n + (n === 1 ? " char" : " chars");
+  }
+  if (charCount) {
+    input.addEventListener("input", updateCharCount);
+    updateCharCount();
+  }
+
+  // Cmd/Ctrl+Enter in the input textarea runs the conversion, echoing the
+  // "run" shortcut of real code-editor/console tools.
+  input.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      runConvert();
+    }
   });
 
   copyBtn.addEventListener("click", () => {

@@ -8,15 +8,24 @@
   <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
-  <header class="site">
-    <a class="home" href="/">&larr; more tools</a>
-  </header>
-  <main class="wrap">
-    <h1>Solar Panel ROI Calculator</h1>
-    <p class="tagline">For Serbian homeowners to see if solar panels are worth it based on local electricity prices.</p>
+  <div class="hero">
+    <header class="site">
+      <a class="home" href="/">&larr; more tools</a>
+      <span class="eyebrow-badge">Serbia &middot; EPS tariffs</span>
+    </header>
+    <div class="hero-inner">
+      <p class="eyebrow">Solar ROI Ledger</p>
+      <h1>Will solar <em>pay for itself</em> on your roof?</h1>
+      <p class="tagline">For Serbian homeowners to see if solar panels are worth it, based on local
+        electricity prices and your own roof.</p>
+    </div>
+  </div>
 
-    <div class="card stack fade-in">
-      <div>
+  <main class="wrap">
+    <div class="ledger fade-in">
+      <p class="ledger-title">Your inputs</p>
+
+      <div class="field">
         <label for="sizeMode">How do you want to size the system?</label>
         <select id="sizeMode">
           <option value="kw">I know the system size I want (kW)</option>
@@ -24,35 +33,53 @@
         </select>
       </div>
 
-      <div id="kwField">
-        <label for="systemSizeKw">Desired system size (kW)</label>
-        <input id="systemSizeKw" type="number" min="1" max="50" step="0.5" value="5" />
+      <div id="kwField" class="field">
+        <div class="param-head">
+          <label for="systemSizeKw">Desired system size</label>
+          <div class="param-value">
+            <input id="systemSizeKw" class="param-number" type="number" min="1" max="50" step="0.5" value="5" />
+            <span class="param-unit">kW</span>
+          </div>
+        </div>
+        <input id="systemSizeKwSlider" class="param-slider" type="range" min="1" max="50" step="0.5" value="5" aria-hidden="true" tabindex="-1" />
       </div>
 
-      <div id="roofField" style="display:none;">
-        <label for="roofArea">Available roof area (m²)</label>
-        <input id="roofArea" type="number" min="5" max="500" step="1" value="30" />
-        <p class="muted" style="font-size:0.8rem; margin:0.3rem 0 0;">Roughly 6 m² of usable roof per 1 kW installed, accounting for panel spacing and orientation.</p>
+      <div id="roofField" class="field" style="display:none;">
+        <div class="param-head">
+          <label for="roofArea">Available roof area</label>
+          <div class="param-value">
+            <input id="roofArea" class="param-number" type="number" min="5" max="500" step="1" value="30" />
+            <span class="param-unit">m&sup2;</span>
+          </div>
+        </div>
+        <input id="roofAreaSlider" class="param-slider" type="range" min="5" max="500" step="1" value="30" aria-hidden="true" tabindex="-1" />
+        <p class="hint">Roughly 6 m&sup2; of usable roof per 1 kW installed, accounting for panel spacing and orientation.</p>
       </div>
 
-      <div>
-        <label for="monthlyBill">Average monthly electricity bill (EUR)</label>
-        <input id="monthlyBill" type="number" min="5" max="1000" step="1" value="60" />
-        <p class="muted" style="font-size:0.8rem; margin:0.3rem 0 0;">If your bill is in RSD, divide by roughly 117 to get EUR.</p>
+      <div class="field">
+        <div class="param-head">
+          <label for="monthlyBill">Average monthly electricity bill</label>
+          <div class="param-value">
+            <input id="monthlyBill" class="param-number" type="number" min="5" max="1000" step="1" value="60" />
+            <span class="param-unit">EUR</span>
+          </div>
+        </div>
+        <input id="monthlyBillSlider" class="param-slider" type="range" min="5" max="1000" step="1" value="60" aria-hidden="true" tabindex="-1" />
+        <p class="hint">If your bill is in RSD, divide by roughly 117 to get EUR.</p>
       </div>
 
-      <div>
+      <div class="field">
         <label for="citySelect">City / region</label>
         <select id="citySelect"></select>
       </div>
 
-      <button id="calculateBtn" type="button">Calculate</button>
+      <button id="calculateBtn" type="button">Calculate ROI</button>
     </div>
 
-    <div id="resultsCard" class="card stack" style="margin-top:1.5rem; display:none;"></div>
+    <div id="resultsCard" class="results" style="display:none;"></div>
 
-    <p class="muted" style="font-size:0.8rem; margin-top:1rem;">
-      ⚠ These are rough estimates for planning only, not a formal quote. Real costs depend on your
+    <p class="disclaimer">
+      &#9888; These are rough estimates for planning only, not a formal quote. Real costs depend on your
       roof, equipment choice, and installer; real savings depend on your actual consumption pattern
       and EPS's current tiered tariffs.
     </p>

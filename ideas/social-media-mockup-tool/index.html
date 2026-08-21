@@ -1,145 +1,178 @@
 <!doctype html>
-<html lang="en" data-accent="coral">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Social Media Mockup Tool</title>
   <meta name="description" content="See how your post will look on Instagram, TikTok, or LinkedIn before you actually post it." />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
-  <canvas class="mesh-bg-canvas" data-mesh-bg="rgba(255,138,101,0.5),rgba(251,113,133,0.3),rgba(96,165,250,0.25)"></canvas>
-  <header class="site">
-    <a class="home" href="/">&larr; more tools</a>
+  <div class="ambient-bg" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="home-link" href="/">&larr; more tools</a>
+    <span class="brand-mark text-gradient">Mockup Studio</span>
   </header>
-  <main class="wrap">
-    <h1>Social Media Mockup Tool</h1>
-    <p class="tagline">Type a caption and upload an image to see how your post will look on Instagram, TikTok, or LinkedIn &mdash; before you actually post it.</p>
 
-    <div class="gradient-border">
-      <div class="card" data-spotlight>
-        <div class="stack">
-          <div>
-            <label for="display-name">Display name</label>
-            <input type="text" id="display-name" maxlength="30" />
-          </div>
-          <div>
-            <label for="caption">Caption</label>
-            <textarea id="caption" rows="3" maxlength="400"></textarea>
-          </div>
-          <div>
-            <label for="image-input">Image</label>
-            <input type="file" id="image-input" accept="image/*" />
-          </div>
-        </div>
-      </div>
+  <main class="studio">
+    <div class="studio-intro">
+      <p class="eyebrow">CREATOR TOOL</p>
+      <h1>See it before you post it.</h1>
+      <p class="tagline">Type a caption and upload an image &mdash; the preview on the right updates instantly for Instagram, TikTok, and LinkedIn.</p>
     </div>
 
-    <div class="platform-tabs row" role="tablist">
-      <button type="button" class="tab-btn active" data-platform="instagram" role="tab" aria-selected="true">Instagram</button>
-      <button type="button" class="tab-btn" data-platform="tiktok" role="tab" aria-selected="false">TikTok</button>
-      <button type="button" class="tab-btn" data-platform="linkedin" role="tab" aria-selected="false">LinkedIn</button>
-    </div>
-
-    <div class="mockup-stage">
-      <!-- Instagram frame -->
-      <section class="mockup-frame ig-frame active" data-frame="instagram" data-tilt>
-        <div class="ig-header">
-          <div class="avatar avatar-sm gradient-avatar"><span class="icon-slot" data-icon="person"></span></div>
-          <span class="ig-username" data-field="name"></span>
-          <span class="spacer"></span>
-          <span class="icon-slot muted-icon" data-icon="dots"></span>
+    <div class="studio-grid">
+      <!-- Compose panel -->
+      <section class="panel compose-panel" aria-labelledby="compose-heading">
+        <div class="panel-head">
+          <span class="panel-step mono">01</span>
+          <h2 id="compose-heading">Compose</h2>
         </div>
-        <div class="mockup-photo-wrap ig-photo">
-          <img class="mockup-photo" data-role="image" alt="" hidden />
-          <div class="mockup-photo-placeholder" data-role="placeholder">
-            <span class="icon-slot" data-icon="photo"></span>
-            <span>Upload an image to preview it here</span>
+
+        <div class="field">
+          <label for="display-name">Display name</label>
+          <input type="text" id="display-name" maxlength="30" placeholder="yourhandle" autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label for="caption">Caption</label>
+          <div class="textarea-wrap">
+            <textarea id="caption" rows="4" maxlength="400"></textarea>
+            <span class="char-count mono" data-char-count>0 / 400</span>
           </div>
         </div>
-        <div class="ig-actions">
-          <span class="icon-slot" data-icon="heart"></span>
-          <span class="icon-slot" data-icon="comment"></span>
-          <span class="icon-slot" data-icon="send"></span>
-          <span class="spacer"></span>
-          <span class="icon-slot" data-icon="bookmark"></span>
+
+        <div class="field">
+          <label for="image-input">Image</label>
+          <label class="dropzone" for="image-input" data-dropzone>
+            <span class="dropzone-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M7.5 8.5 12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            </span>
+            <span class="dropzone-text">Click to upload an image</span>
+            <span class="dropzone-hint">Stays on your device &mdash; never uploaded anywhere</span>
+            <img class="dropzone-preview" data-dropzone-preview alt="" hidden />
+          </label>
+          <input type="file" id="image-input" accept="image/*" hidden />
         </div>
-        <div class="ig-likes">128 likes</div>
-        <div class="ig-caption">
-          <span class="ig-username" data-field="name"></span>
-          <span data-field="caption"></span>
-        </div>
-        <div class="ig-comments">View all 12 comments</div>
-        <div class="ig-time">2 HOURS AGO</div>
       </section>
 
-      <!-- TikTok frame -->
-      <section class="mockup-frame tt-frame" data-frame="tiktok" data-tilt>
-        <div class="mockup-photo-wrap tt-photo">
-          <img class="mockup-photo" data-role="image" alt="" hidden />
-          <div class="mockup-photo-placeholder dark" data-role="placeholder">
-            <span class="icon-slot" data-icon="photo"></span>
-            <span>Upload an image to preview it here</span>
-          </div>
-          <div class="tt-rail">
-            <div class="tt-avatar-wrap">
+      <!-- Stage panel -->
+      <section class="panel stage-panel" aria-labelledby="stage-heading">
+        <div class="panel-head">
+          <span class="panel-step mono">02</span>
+          <h2 id="stage-heading">Preview</h2>
+        </div>
+
+        <div class="platform-switch" role="tablist" data-switch>
+          <span class="platform-switch-pill" data-switch-pill aria-hidden="true"></span>
+          <button type="button" class="switch-btn active" data-platform="instagram" role="tab" aria-selected="true">Instagram</button>
+          <button type="button" class="switch-btn" data-platform="tiktok" role="tab" aria-selected="false">TikTok</button>
+          <button type="button" class="switch-btn" data-platform="linkedin" role="tab" aria-selected="false">LinkedIn</button>
+        </div>
+
+        <div class="mockup-stage" data-stage data-active-platform="instagram">
+          <!-- Instagram frame -->
+          <section class="mockup-frame ig-frame active" data-frame="instagram">
+            <div class="ig-header">
               <div class="avatar avatar-sm gradient-avatar"><span class="icon-slot" data-icon="person"></span></div>
-              <span class="tt-plus icon-slot" data-icon="plusBadge"></span>
+              <span class="ig-username" data-field="name"></span>
+              <span class="spacer"></span>
+              <span class="icon-slot muted-icon" data-icon="dots"></span>
             </div>
-            <div class="tt-rail-item"><span class="icon-slot" data-icon="heartFilled"></span><span>44.2K</span></div>
-            <div class="tt-rail-item"><span class="icon-slot" data-icon="comment"></span><span>1,204</span></div>
-            <div class="tt-rail-item"><span class="icon-slot" data-icon="send"></span><span>3,381</span></div>
-            <div class="tt-disc"></div>
-          </div>
-          <div class="tt-overlay">
-            <div class="tt-username" data-field="handle"></div>
-            <div class="tt-caption" data-field="caption"></div>
-            <div class="tt-sound"><span class="icon-slot" data-icon="music"></span><span>original sound &mdash; <span data-field="handle-inline"></span></span></div>
-          </div>
-        </div>
-      </section>
+            <div class="mockup-photo-wrap ig-photo">
+              <img class="mockup-photo" data-role="image" alt="" hidden />
+              <div class="mockup-photo-placeholder" data-role="placeholder">
+                <span class="icon-slot" data-icon="photo"></span>
+                <span>Upload an image to preview it here</span>
+              </div>
+            </div>
+            <div class="ig-actions">
+              <span class="icon-slot" data-icon="heart"></span>
+              <span class="icon-slot" data-icon="comment"></span>
+              <span class="icon-slot" data-icon="send"></span>
+              <span class="spacer"></span>
+              <span class="icon-slot" data-icon="bookmark"></span>
+            </div>
+            <div class="ig-likes">128 likes</div>
+            <div class="ig-caption">
+              <span class="ig-username" data-field="name"></span>
+              <span data-field="caption"></span>
+            </div>
+            <div class="ig-comments">View all 12 comments</div>
+            <div class="ig-time">2 HOURS AGO</div>
+          </section>
 
-      <!-- LinkedIn frame -->
-      <section class="mockup-frame li-frame" data-frame="linkedin" data-tilt>
-        <div class="li-header">
-          <div class="avatar avatar-md gradient-avatar"><span class="icon-slot" data-icon="person"></span></div>
-          <div class="li-header-text">
-            <div class="li-name" data-field="name"></div>
-            <div class="li-headline">Sharing things worth sharing</div>
-            <div class="li-meta"><span>2h</span><span class="icon-slot" data-icon="globe"></span></div>
-          </div>
-          <span class="spacer"></span>
-          <span class="icon-slot muted-icon" data-icon="dots"></span>
-        </div>
-        <div class="li-caption" data-field="caption"></div>
-        <div class="mockup-photo-wrap li-photo">
-          <img class="mockup-photo" data-role="image" alt="" hidden />
-          <div class="mockup-photo-placeholder" data-role="placeholder">
-            <span class="icon-slot" data-icon="photo"></span>
-            <span>Upload an image to preview it here</span>
-          </div>
-        </div>
-        <div class="li-reactions">
-          <span class="icon-slot" data-icon="thumbsUp"></span>
-          <span>You and 41 others</span>
-          <span class="spacer"></span>
-          <span>6 comments</span>
-        </div>
-        <div class="li-actions">
-          <div class="li-action"><span class="icon-slot" data-icon="thumbsUp"></span><span>Like</span></div>
-          <div class="li-action"><span class="icon-slot" data-icon="comment"></span><span>Comment</span></div>
-          <div class="li-action"><span class="icon-slot" data-icon="repost"></span><span>Repost</span></div>
-          <div class="li-action"><span class="icon-slot" data-icon="send"></span><span>Send</span></div>
+          <!-- TikTok frame -->
+          <section class="mockup-frame tt-frame" data-frame="tiktok">
+            <div class="mockup-photo-wrap tt-photo">
+              <img class="mockup-photo" data-role="image" alt="" hidden />
+              <div class="mockup-photo-placeholder dark" data-role="placeholder">
+                <span class="icon-slot" data-icon="photo"></span>
+                <span>Upload an image to preview it here</span>
+              </div>
+              <div class="tt-rail">
+                <div class="tt-avatar-wrap">
+                  <div class="avatar avatar-sm gradient-avatar"><span class="icon-slot" data-icon="person"></span></div>
+                  <span class="tt-plus icon-slot" data-icon="plusBadge"></span>
+                </div>
+                <div class="tt-rail-item"><span class="icon-slot" data-icon="heartFilled"></span><span>44.2K</span></div>
+                <div class="tt-rail-item"><span class="icon-slot" data-icon="comment"></span><span>1,204</span></div>
+                <div class="tt-rail-item"><span class="icon-slot" data-icon="send"></span><span>3,381</span></div>
+                <div class="tt-disc"></div>
+              </div>
+              <div class="tt-overlay">
+                <div class="tt-username" data-field="handle"></div>
+                <div class="tt-caption" data-field="caption"></div>
+                <div class="tt-sound"><span class="icon-slot" data-icon="music"></span><span>original sound &mdash; <span data-field="handle-inline"></span></span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- LinkedIn frame -->
+          <section class="mockup-frame li-frame" data-frame="linkedin">
+            <div class="li-header">
+              <div class="avatar avatar-md gradient-avatar"><span class="icon-slot" data-icon="person"></span></div>
+              <div class="li-header-text">
+                <div class="li-name" data-field="name"></div>
+                <div class="li-headline">Sharing things worth sharing</div>
+                <div class="li-meta"><span>2h</span><span class="icon-slot" data-icon="globe"></span></div>
+              </div>
+              <span class="spacer"></span>
+              <span class="icon-slot muted-icon" data-icon="dots"></span>
+            </div>
+            <div class="li-caption" data-field="caption"></div>
+            <div class="mockup-photo-wrap li-photo">
+              <img class="mockup-photo" data-role="image" alt="" hidden />
+              <div class="mockup-photo-placeholder" data-role="placeholder">
+                <span class="icon-slot" data-icon="photo"></span>
+                <span>Upload an image to preview it here</span>
+              </div>
+            </div>
+            <div class="li-reactions">
+              <span class="icon-slot" data-icon="thumbsUp"></span>
+              <span>You and 41 others</span>
+              <span class="spacer"></span>
+              <span>6 comments</span>
+            </div>
+            <div class="li-actions">
+              <div class="li-action"><span class="icon-slot" data-icon="thumbsUp"></span><span>Like</span></div>
+              <div class="li-action"><span class="icon-slot" data-icon="comment"></span><span>Comment</span></div>
+              <div class="li-action"><span class="icon-slot" data-icon="repost"></span><span>Repost</span></div>
+              <div class="li-action"><span class="icon-slot" data-icon="send"></span><span>Send</span></div>
+            </div>
+          </section>
         </div>
       </section>
     </div>
   </main>
-  <footer class="site">
+
+  <footer class="site-footer">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
+
   <script src="data.js"></script>
-  <script src="tier2.js" defer></script>
   <script src="app.js"></script>
+  <script src="chrome.js"></script>
 </body>
 </html>

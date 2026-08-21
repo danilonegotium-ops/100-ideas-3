@@ -11,31 +11,62 @@
   <header class="site">
     <a class="home" href="/">&larr; more tools</a>
   </header>
-  <main class="wrap">
-    <h1>Millionaire Progress Bar</h1>
-    <p class="tagline">Enter your current savings and watch a progress bar toward one million, saved locally so it's there next time you check.</p>
 
-    <div class="card stack fade-in">
-      <div class="stack">
-        <label for="savings">Current savings (any currency — just the number)</label>
-        <div class="row">
-          <input type="number" id="savings" min="0" step="any" placeholder="e.g. 42500" />
-          <button id="save-btn" class="btn">Update</button>
+  <main class="wrap">
+    <div class="masthead fade-in">
+      <p class="eyebrow">Net worth ledger</p>
+      <h1>Millionaire Progress</h1>
+      <p class="tagline">Enter your current savings and watch the ring close in on one million &mdash; any currency, any unit, kept only on this device.</p>
+    </div>
+
+    <div class="ledger-line fade-in">
+      <label for="savings">Current savings <span class="unit-note">(any currency &mdash; just the number)</span></label>
+      <div class="ledger-row">
+        <input type="number" id="savings" min="0" step="any" placeholder="e.g. 42500" inputmode="decimal" />
+        <button id="save-btn" class="btn-gold">Update</button>
+      </div>
+    </div>
+
+    <div class="medallion-wrap fade-in" id="medallion-wrap">
+      <div class="medallion">
+        <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="ring-track" cx="110" cy="110" r="96" />
+          <circle class="ring-arc" id="ring-arc" cx="110" cy="110" r="96" />
+        </svg>
+        <div class="medallion-center" aria-live="polite">
+          <span class="hero-amount" id="hero-amount">0</span>
+          <span class="hero-caption" id="hero-caption">0% of 1,000,000</span>
         </div>
       </div>
-
-      <div class="mpb-bar-track">
-        <div class="mpb-bar-fill" id="bar-fill"></div>
-      </div>
-
-      <div class="row mpb-stats">
-        <span id="percent-label" class="mpb-percent">0%</span>
-        <span id="remaining-label" class="muted mono"></span>
-      </div>
-
-      <p id="milestone-message" class="mpb-message muted"></p>
+      <p class="remaining-line mono" id="remaining-label"></p>
     </div>
+
+    <div class="dial fade-in" id="dial" role="list" aria-label="Savings milestones">
+      <div class="dial-pill" data-threshold="10" role="listitem">
+        <span class="dial-track"><span class="dial-fill"></span></span>
+        <span class="dial-label">100K</span>
+      </div>
+      <div class="dial-pill" data-threshold="25" role="listitem">
+        <span class="dial-track"><span class="dial-fill"></span></span>
+        <span class="dial-label">250K</span>
+      </div>
+      <div class="dial-pill" data-threshold="50" role="listitem">
+        <span class="dial-track"><span class="dial-fill"></span></span>
+        <span class="dial-label">500K</span>
+      </div>
+      <div class="dial-pill" data-threshold="75" role="listitem">
+        <span class="dial-track"><span class="dial-fill"></span></span>
+        <span class="dial-label">750K</span>
+      </div>
+      <div class="dial-pill" data-threshold="100" role="listitem">
+        <span class="dial-track"><span class="dial-fill"></span></span>
+        <span class="dial-label">1M</span>
+      </div>
+    </div>
+
+    <p id="milestone-message" class="milestone-message fade-in"></p>
   </main>
+
   <footer class="site">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>

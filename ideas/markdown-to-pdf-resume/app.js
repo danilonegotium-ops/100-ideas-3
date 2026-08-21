@@ -109,8 +109,21 @@ function markdownToHtml(markdown) {
   return out.join("\n");
 }
 
+/**
+ * Counts words in a raw Markdown string (whitespace-delimited, ignoring
+ * Markdown syntax characters). Pure function, used to drive the toolbar's
+ * live word count in the editor chrome.
+ * @param {string} markdown
+ * @returns {number}
+ */
+function countWords(markdown) {
+  const text = (markdown || "").trim();
+  if (!text) return 0;
+  return text.split(/\s+/).filter(Boolean).length;
+}
+
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { escapeHtml, renderInline, markdownToHtml };
+  module.exports = { escapeHtml, renderInline, markdownToHtml, countWords };
 }
 
 (function initApp() {
@@ -120,9 +133,17 @@ if (typeof module !== "undefined" && module.exports) {
   const preview = document.getElementById("preview");
   const downloadBtn = document.getElementById("download-btn");
   const resetBtn = document.getElementById("reset-btn");
+  const stats = document.getElementById("stats");
+
+  function updateStats() {
+    if (!stats) return;
+    const words = countWords(input.value);
+    stats.textContent = words === 1 ? "1 word" : words + " words";
+  }
 
   function render() {
     preview.innerHTML = markdownToHtml(input.value);
+    updateStats();
   }
 
   input.value = STARTER_RESUME_MARKDOWN;

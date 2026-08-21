@@ -1,48 +1,57 @@
 <!doctype html>
-<html lang="en" data-accent="cyan">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Font Matcher</title>
-  <meta name="description" content="Describe a font you saw and get the closest free Google Font matches, rendered live." />
+  <title>Font Matcher — a type specimen catalog</title>
+  <meta name="description" content="Describe a font you saw and get the closest free Google Font matches, rendered live at both display and text scale." />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
   <header class="site">
+    <span class="wordmark"><span class="mark">Aa</span> Font Matcher</span>
     <a class="home" href="/">&larr; more tools</a>
   </header>
   <main class="wrap">
-    <h1>Font Matcher</h1>
-    <p class="tagline">A guided questionnaire, not automatic image recognition: answer a few questions about a font you saw and get the closest free Google Font matches.</p>
+    <div class="hero">
+      <p class="eyebrow" id="fm-eyebrow">Specimen catalog</p>
+      <h1>Describe the letters.<br />Meet their <em>match</em>.</h1>
+      <p class="tagline">A guided questionnaire, not automatic image recognition: answer a few questions about a font you saw and get the closest free Google Font matches, set at real display and text size.</p>
+    </div>
+    <hr class="rule" />
 
-    <div class="gradient-border">
-      <div class="card">
-        <p class="muted" style="margin-top: 0;">
-          Heads up: this tool doesn't read an uploaded photo. Instead, answer what you
-          remember about how the letters looked, and it matches your description against
-          25 curated Google Fonts tagged with the same characteristics.
+    <div class="card">
+      <div class="notice">
+        <span class="notice-mark">i</span>
+        <p style="margin: 0;">
+          This tool doesn't read an uploaded photo. Instead, answer what you remember
+          about how the letters looked, and it matches your description against 25
+          curated Google Fonts tagged with the same characteristics.
         </p>
-
-        <form class="stack" id="fm-form">
-          <div id="fm-questions" class="stack"></div>
-          <p class="muted" id="fm-error" hidden>Please answer every question first.</p>
-          <button type="submit" class="btn-glow">Find matching fonts</button>
-        </form>
       </div>
+
+      <form class="stack" id="fm-form">
+        <div id="fm-questions"></div>
+        <p class="form-error" id="fm-error" hidden>Please answer every question first.</p>
+        <button type="submit">Find matching fonts</button>
+      </form>
     </div>
 
-    <div class="card" id="fm-results-view" hidden>
-      <h2 style="margin-top: 0;">Closest matches</h2>
-      <div id="fm-results-list" class="stack"></div>
-      <button type="button" id="fm-retake">Start over</button>
-    </div>
+    <section id="fm-results-view" hidden>
+      <div class="results-head">
+        <h2>Closest matches</h2>
+        <span class="results-count">Top 4 of 25</span>
+      </div>
+      <div id="fm-results-list" class="specimen-list"></div>
+      <div class="results-actions">
+        <button type="button" class="btn-ghost" id="fm-retake">Start over</button>
+      </div>
+    </section>
   </main>
   <footer class="site">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
   <script src="data.js"></script>
-  <script src="tier2.js" defer></script>
   <script src="app.js"></script>
 </body>
 </html>

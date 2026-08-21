@@ -9,51 +9,73 @@
 </head>
 <body>
   <header class="site">
-    <a class="home" href="/">&larr; more tools</a>
+    <a class="home" href="/">more tools</a>
+    <span class="locale-badge">sr-Latn <span class="arrow">&rarr;</span> sr-Cyrl</span>
   </header>
   <main class="wrap">
-    <h1>JSON to Serbian Cyrillic</h1>
-    <p class="tagline">Paste JSON (or plain text) written in Serbian Latin — get it back in Serbian Cyrillic. Handles digraphs (lj, nj, dž) and diacritics (č, ć, š, ž, đ) correctly.</p>
+    <p class="kicker">transliterate --lang=sr --from=Latn --to=Cyrl</p>
+    <h1>JSON to Serbian Cyrillic<span class="cursor">&#9608;</span></h1>
+    <p class="tagline">Paste JSON (or plain text) written in Serbian Latin &mdash; get it back in Serbian Cyrillic. Handles digraphs (lj, nj, d&#382;) and diacritics (&#269;, &#263;, &#353;, &#382;, &#273;) correctly.</p>
 
-    <div class="card stack fade-in">
-      <div class="row" style="align-items: center; justify-content: space-between;">
-        <div class="row" style="gap: 1.25rem; align-items: center;">
-          <label class="mode-toggle">
-            <input type="radio" name="mode" value="json" id="mode-json" checked />
-            JSON mode
-          </label>
-          <label class="mode-toggle">
-            <input type="radio" name="mode" value="text" id="mode-text" />
-            Plain text mode
-          </label>
+    <div class="terminal fade-in">
+      <div class="terminal-titlebar">
+        <div style="display:flex; align-items:center;">
+          <span class="led-row" aria-hidden="true">
+            <span class="led led-green"></span>
+            <span class="led led-amber"></span>
+            <span class="led led-dim"></span>
+          </span>
+          <div class="terminal-tabs" role="tablist">
+            <label class="tab">
+              <input type="radio" name="mode" value="json" id="mode-json" checked />
+              JSON <span class="ext">.json</span>
+            </label>
+            <label class="tab">
+              <input type="radio" name="mode" value="text" id="mode-text" />
+              Plain text <span class="ext">.txt</span>
+            </label>
+          </div>
         </div>
         <label class="mode-toggle" id="keys-toggle-wrap">
           <input type="checkbox" id="transliterate-keys" />
-          Transliterate keys too
+          keys too
         </label>
       </div>
 
-      <div>
-        <label for="input">Input (Serbian Latin)</label>
-        <textarea id="input" rows="10" placeholder='{"pozdrav": "Zdravo, kako si? Ovo je čđšžćnjlj test."}'></textarea>
-      </div>
+      <div class="split-pane">
+        <section class="pane pane-input">
+          <div class="pane-head">
+            <label for="input">&#1059;&#1051;&#1040;&#1047; <span class="locale-tag">sr-Latn</span></label>
+          </div>
+          <textarea id="input" rows="10" placeholder='{"pozdrav": "Zdravo, kako si? Ovo je &#269;&#273;&#353;&#382;&#263;njlj test."}'></textarea>
+        </section>
 
-      <div class="row">
-        <button id="convert-btn" type="button">Convert to Cyrillic</button>
-        <button id="copy-btn" type="button" class="secondary">Copy result</button>
-        <button id="clear-btn" type="button" class="secondary">Clear</button>
+        <div class="pane-divider">
+          <button id="convert-btn" type="button" class="convert-btn">
+            <span class="glyph" aria-hidden="true">&#8594;</span>
+            <span>Convert</span>
+          </button>
+        </div>
+
+        <section class="pane pane-output">
+          <div class="pane-head">
+            <label for="output">&#1048;&#1047;&#1051;&#1040;&#1047; <span class="locale-tag">sr-Cyrl</span></label>
+            <button id="copy-btn" type="button" class="icon-btn" title="Copy result to clipboard">copy</button>
+          </div>
+          <textarea id="output" rows="10" readonly placeholder="Cyrillic output appears here..."></textarea>
+        </section>
       </div>
 
       <div id="error" class="error" hidden></div>
 
-      <div>
-        <label for="output">Output (Serbian Cyrillic)</label>
-        <textarea id="output" rows="10" readonly placeholder="Cyrillic output appears here..."></textarea>
+      <div class="terminal-statusbar">
+        <button id="clear-btn" type="button" class="ghost-btn">clear</button>
+        <span class="status-meta" id="char-count">0 chars</span>
       </div>
     </div>
 
-    <details class="card" style="margin-top: 1rem;">
-      <summary>Latin &rarr; Cyrillic mapping table</summary>
+    <details class="card">
+      <summary>cat latin-cyrillic.map</summary>
       <div id="mapping-table"></div>
     </details>
   </main>

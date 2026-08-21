@@ -8,28 +8,47 @@
   <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
-  <header class="site no-print">
-    <a class="home" href="/">&larr; more tools</a>
-  </header>
-  <main class="wrap">
-    <h1 class="no-print">Markdown to PDF Resume</h1>
-    <p class="tagline no-print">Write your resume in Markdown on the left. The preview on the right is what gets exported &mdash; click "Download PDF" to print/save it.</p>
+  <div class="grain no-print" aria-hidden="true"></div>
 
-    <div class="row no-print" style="margin-bottom: 1rem;">
-      <button id="download-btn" type="button">Download PDF</button>
-      <button id="reset-btn" type="button" class="secondary">Reset to template</button>
+  <header class="masthead no-print">
+    <a class="home-link" href="/">&larr; more tools</a>
+    <span class="masthead-badge">no signup &middot; no tracking</span>
+  </header>
+
+  <main class="studio">
+    <div class="studio-intro no-print">
+      <p class="kicker">Markdown &rarr; PDF</p>
+      <h1>Markdown to PDF Resume</h1>
+      <p class="tagline">Write your resume in Markdown on the left. The preview on the right is what gets exported &mdash; press <span class="mono-key">Download PDF</span> when it's ready.</p>
+    </div>
+
+    <div class="toolbar no-print">
+      <div class="toolbar-group">
+        <button id="download-btn" type="button" class="btn-pill btn-pill--primary">Download PDF</button>
+        <button id="reset-btn" type="button" class="btn-pill btn-pill--ghost">Reset to template</button>
+      </div>
+      <div class="toolbar-group toolbar-meta">
+        <span id="stats">0 words</span>
+      </div>
     </div>
 
     <div class="editor-grid">
-      <div class="pane editor-pane no-print">
-        <label for="markdown-input">Markdown</label>
+      <section class="pane editor-pane no-print">
+        <div class="pane-strip">
+          <label for="markdown-input" class="pane-label">Markdown</label>
+          <span class="pane-hint">.md</span>
+        </div>
         <textarea id="markdown-input" rows="28" spellcheck="false"></textarea>
-      </div>
-      <div class="pane preview-pane">
-        <div id="preview" class="resume-preview"></div>
-      </div>
+      </section>
+      <section class="pane preview-pane" aria-label="Resume preview">
+        <div class="page-stage">
+          <span class="page-stage-badge no-print">Live preview</span>
+          <div id="preview" class="resume-preview"></div>
+        </div>
+      </section>
     </div>
   </main>
+
   <footer class="site no-print">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>

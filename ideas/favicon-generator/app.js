@@ -51,47 +51,91 @@ function generateAllFavicons(img, canvas) {
   }));
 }
 
+// Display tuning for the "true relative scale" strip: every generated
+// size renders proportionally against the largest one (capped so a
+// 512px icon doesn't blow out the layout), so a 16x16 is honestly,
+// dramatically tiny next to a 512x512 rather than normalized into
+// equal-size cards. A per-item --hover-scale custom property lets you
+// hover/tap a tiny swatch to "loupe" it up to a comparable inspection
+// size, since some of these render at just a few real pixels.
+const SCALE_STRIP_MAX_DISPLAY_PX = 128;
+const SCALE_STRIP_MIN_DISPLAY_PX = 3;
+const SCALE_STRIP_HOVER_TARGET_PX = 64;
+const SCALE_STRIP_HOVER_SCALE_MAX = 16;
+
 function renderResults(favicons) {
-  const container = document.getElementById("results");
+  const resultsSection = document.getElementById("results-section");
+  const scaleStrip = document.getElementById("scale-strip");
+  const manifest = document.getElementById("manifest");
   const downloadAllBtn = document.getElementById("download-all-btn");
-  container.innerHTML = "";
 
-  favicons.forEach((fav, index) => {
-    const item = document.createElement("div");
-    item.className = "fg-item";
-    // Tier 2: a subtle 3D tilt on the first few result cards only
-    // (surgical per design system guidance, not on every generated card).
-    if (index < 3) item.setAttribute("data-tilt", "");
+  scaleStrip.innerHTML = "";
+  manifest.innerHTML = "";
 
-    const img = document.createElement("img");
-    img.src = fav.dataUrl;
-    img.width = Math.min(fav.size, 96);
-    img.height = Math.min(fav.size, 96);
-    img.alt = `${fav.label} preview`;
-
-    const label = document.createElement("div");
-    label.className = "fg-label";
-    label.textContent = fav.label;
-
-    const link = document.createElement("a");
-    link.className = "btn";
-    link.href = fav.dataUrl;
-    link.download = fav.filename;
-    link.textContent = "Download";
-
-    item.appendChild(img);
-    item.appendChild(label);
-    item.appendChild(link);
-    container.appendChild(item);
-  });
-  // Results render after page load, so re-run Tier 2's tilt wiring for
-  // these newly-added [data-tilt] elements (autoInit only scans once on
-  // DOMContentLoaded, before the user has uploaded anything).
-  if (typeof window !== "undefined" && window.Tier2 && typeof window.Tier2.initTilt === "function") {
-    window.Tier2.initTilt(container);
+  if (!favicons.length) {
+    resultsSection.hidden = true;
+    downloadAllBtn.hidden = true;
+    return;
   }
 
-  downloadAllBtn.hidden = favicons.length === 0;
+  const largest = Math.max(...favicons.map((fav) => fav.size));
+  const scale = SCALE_STRIP_MAX_DISPLAY_PX / largest;
+
+  favicons.forEach((fav) => {
+    const displayPx = Math.max(Math.round(fav.size * scale), SCALE_STRIP_MIN_DISPLAY_PX);
+    const hoverScale = Math.min(
+      Math.max(SCALE_STRIP_HOVER_TARGET_PX / displayPx, 1),
+      SCALE_STRIP_HOVER_SCALE_MAX
+    );
+
+    const item = document.createElement("div");
+    item.className = "scale-item";
+
+    const swatch = document.createElement("img");
+    swatch.src = fav.dataUrl;
+    swatch.width = displayPx;
+    swatch.height = displayPx;
+    swatch.alt = `${fav.label} preview, rendered at true relative scale`;
+    swatch.className = "scale-swatch";
+    swatch.style.setProperty("--hover-scale", hoverScale.toFixed(2));
+
+    const tick = document.createElement("div");
+    tick.className = "scale-tick";
+
+    const label = document.createElement("div");
+    label.className = "scale-label";
+    label.textContent = `${fav.size}×${fav.size}`;
+
+    item.appendChild(swatch);
+    item.appendChild(tick);
+    item.appendChild(label);
+    scaleStrip.appendChild(item);
+
+    const row = document.createElement("div");
+    row.className = "manifest-row";
+
+    const name = document.createElement("span");
+    name.className = "manifest-name";
+    name.textContent = fav.filename;
+
+    const dims = document.createElement("span");
+    dims.className = "manifest-dims";
+    dims.textContent = fav.label;
+
+    const link = document.createElement("a");
+    link.className = "btn btn-sm";
+    link.href = fav.dataUrl;
+    link.download = fav.filename;
+    link.textContent = "↓ save";
+
+    row.appendChild(name);
+    row.appendChild(dims);
+    row.appendChild(link);
+    manifest.appendChild(row);
+  });
+
+  resultsSection.hidden = false;
+  downloadAllBtn.hidden = false;
   downloadAllBtn.onclick = () => {
     favicons.forEach((fav, i) => {
       setTimeout(() => {
@@ -108,14 +152,21 @@ function renderResults(favicons) {
 
 if (typeof document !== "undefined") {
   const input = document.getElementById("image-input");
+  const dropzone = document.getElementById("dropzone");
   const canvas = document.getElementById("work-canvas");
-  const statusMsg = document.getElementById("status-msg");
+  const statusLine = document.getElementById("status-msg");
+  const statusText = document.getElementById("status-text");
 
-  input.addEventListener("change", () => {
-    const file = input.files && input.files[0];
+  function setStatus(text, state) {
+    statusText.textContent = text;
+    statusLine.classList.remove("is-busy", "is-done", "is-error");
+    if (state) statusLine.classList.add(state);
+  }
+
+  function processFile(file) {
     if (!file) return;
 
-    statusMsg.textContent = "Generating favicons...";
+    setStatus(`processing ${file.name}...`, "is-busy");
     const objectUrl = URL.createObjectURL(file);
     const img = new Image();
 
@@ -123,20 +174,48 @@ if (typeof document !== "undefined") {
       try {
         const favicons = generateAllFavicons(img, canvas);
         renderResults(favicons);
-        statusMsg.textContent = `Generated ${favicons.length} sizes from ${file.name}. Click any Download button to save.`;
+        setStatus(`${favicons.length} sizes generated from ${file.name} — click any "save" to download`, "is-done");
       } catch (err) {
-        statusMsg.textContent = "Could not process this image (it may be an unsupported format).";
+        setStatus("could not process this image (it may be an unsupported format)", "is-error");
       }
       URL.revokeObjectURL(objectUrl);
     };
 
     img.onerror = () => {
-      statusMsg.textContent = "That file couldn't be loaded as an image.";
+      setStatus("that file couldn't be loaded as an image", "is-error");
       URL.revokeObjectURL(objectUrl);
     };
 
     img.src = objectUrl;
+  }
+
+  input.addEventListener("change", () => {
+    const file = input.files && input.files[0];
+    processFile(file);
   });
+
+  // Drag-and-drop onto the dropzone, matching the dashed-dropzone pattern
+  // researched on 21st.dev — dragover highlights the border, drop hands
+  // the file to the same processFile() path the <input> change uses.
+  if (dropzone) {
+    ["dragenter", "dragover"].forEach((evt) => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add("is-dragover");
+      });
+    });
+    ["dragleave", "dragend"].forEach((evt) => {
+      dropzone.addEventListener(evt, () => {
+        dropzone.classList.remove("is-dragover");
+      });
+    });
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("is-dragover");
+      const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      processFile(file);
+    });
+  }
 }
 
 if (typeof module !== "undefined" && module.exports) {

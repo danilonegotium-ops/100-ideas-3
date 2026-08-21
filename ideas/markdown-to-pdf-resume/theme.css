@@ -1,140 +1,89 @@
 /* ============================================================
-   TIER 1 — "Refined Minimal"
-   Shared design tokens + base styles for all Wave 1/2 static tools.
+   MARKDOWN TO PDF RESUME — bespoke theme
+   "Ink & Paper" — a writing studio at night. The editor chrome is a
+   dark, warm charcoal study (ink-and-brass, monospace + italic serif)
+   built for focused drafting; the resume itself is a crisp white page
+   that appears to float, spotlit, on the desk in front of you — the
+   one thing in the room that has to look printable and professional.
 
-   This file is the DEFAULT for every static idea. It is copied into each
-   idea folder and the accent/radius tokens may be nudged per-idea, but the
-   scale (spacing/type/motion) should stay consistent across all 39 tools so
-   the whole "100 ideas" project reads as one family.
+   Design references (see handoff notes for the full research trail):
+   - "Code Editor Sheet" (21st.dev, bankkroll) — dark IDE panel with a
+     labeled strip above the editing surface. Informed the editor
+     pane's .pane-strip header instead of a bare textarea.
+   - "v-toolbar-3" (21st.dev, cnippet.dev) — a floating rounded pill
+     toolbar with a solid dark CTA at the end. Informed .toolbar.
+   - Tailark "Smart Editor" marketing hero (21st.dev) — warm light
+     canvas, hairline dividers instead of boxed cards, a floating pill
+     formatting bar, a monospace list with one accent-colored word.
+     Informed the hairline-divider habit and the kicker/mono labels.
+   - "Certificate of Appreciation" component (21st.dev, designali-in) —
+     a document framed by a dotted outer border + solid inner card,
+     bold condensed headline, thin rule under the recipient's name.
+     Informed the resume page's corner-fold + shadow "real paper"
+     framing and the accent hairline under section headings.
 
-   Existing selectors (.card, .btn, .stack, .row, input/textarea/select,
-   label, header.site, footer.site) are preserved byte-for-byte in meaning —
-   only their styling is upgraded — so dropping this file into an idea
-   folder that already uses those classes never breaks markup.
-
-   Want more visual ambition (glass panels, animated gradient borders,
-   spotlight-follows-cursor, canvas mesh backgrounds, 3D tilt, bento grids)?
-   See tier2.css + tier2.js and _shared/static-template/DESIGN_SYSTEM.md.
+   No external fonts/CDNs — system serif + system monospace only, so
+   this stays fully offline-capable.
    ============================================================ */
 
 :root {
-  /* ---- Color: surfaces ---- */
-  --bg: #0a0b0d;
-  --bg-elevated: #131519;
-  --bg-elevated-2: #1a1d22;
-  --border: #23262c;
-  --border-hover: #343841;
+  /* ---- Ink & paper palette (editor chrome only — the resume itself
+     is hardcoded white/black further down, independent of these) ---- */
+  --ink-950: #15130f;
+  --ink-900: #1c1912;
+  --ink-850: #231f16;
+  --ink-border: #3a3226;
+  --parchment: #f4eee1;
+  --parchment-muted: #b9ac93;
+  --parchment-faint: #7d7160;
 
-  /* ---- Color: text ---- */
-  --text: #f2f4f7;
-  --text-muted: #9aa1ab;
-  --text-faint: #6b7280;
+  --brass: #c99a4e;
+  --brass-strong: #e0b46a;
+  --brass-rgb: 201, 154, 78;
+  --live: #7bc47f;
+  --live-rgb: 123, 196, 127;
 
-  /* ---- Color: accent (override per-idea if it helps differentiate) ---- */
-  --accent: #34d399;
-  --accent-strong: #10b981;
-  --accent-rgb: 52, 211, 153; /* keep in sync with --accent, used for glows */
-  --danger: #f87171;
-  --danger-rgb: 248, 113, 113;
-
-  /* ---- Radius scale ---- */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-lg: 20px;
   --radius-full: 999px;
-  --radius: var(--radius-md); /* legacy alias, kept for older idea CSS */
 
-  /* ---- Spacing scale ---- */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-
-  /* ---- Type scale (fluid, clamps between mobile and desktop) ---- */
-  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8rem);
-  --text-sm: clamp(0.85rem, 0.82rem + 0.15vw, 0.9rem);
-  --text-base: clamp(0.95rem, 0.92rem + 0.2vw, 1rem);
-  --text-lg: clamp(1.05rem, 1rem + 0.3vw, 1.15rem);
-  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-2xl: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
-  --text-3xl: clamp(2rem, 1.7rem + 1.6vw, 2.75rem);
-
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
-    Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Code",
+  --font-serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype",
+    "Book Antiqua", Palatino, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono",
     Menlo, Consolas, monospace;
 
-  /* ---- Motion ---- */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out, snappy+smooth */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 150ms;
   --dur-base: 250ms;
-  --dur-slow: 450ms;
 
-  /* ---- Elevation ---- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.4),
-    0 8px 32px -8px rgba(var(--accent-rgb), 0.35);
-
-  --max-width: 720px;
-  --max-width-wide: 960px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fafafa;
-    --bg-elevated: #ffffff;
-    --bg-elevated-2: #f2f3f5;
-    --border: #e5e7eb;
-    --border-hover: #d1d5db;
-    --text: #14171b;
-    --text-muted: #5b6472;
-    --text-faint: #8a94a3;
-    --accent: #059669;
-    --accent-strong: #047857;
-    --accent-rgb: 5, 150, 105;
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 8px 24px -8px rgba(15, 23, 42, 0.14);
-    --shadow-lg: 0 24px 48px -16px rgba(15, 23, 42, 0.18);
-    --shadow-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.25),
-      0 8px 32px -8px rgba(var(--accent-rgb), 0.25);
-  }
+  --studio-max: 1180px;
 }
 
 * { box-sizing: border-box; }
 
-html { color-scheme: dark light; }
+html { color-scheme: dark; }
 
 body {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  background: var(--bg);
+  min-height: 100vh;
+  background: var(--ink-950);
   background-image:
-    radial-gradient(ellipse 60% 40% at 15% -10%, rgba(var(--accent-rgb), 0.14), transparent 60%),
-    radial-gradient(ellipse 50% 35% at 100% 0%, rgba(var(--accent-rgb), 0.08), transparent 55%);
+    radial-gradient(ellipse 60% 40% at 15% -10%, rgba(var(--brass-rgb), 0.14), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 100% 0%, rgba(var(--brass-rgb), 0.07), transparent 55%);
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: var(--text);
+  color: var(--parchment);
+  font-family: var(--font-serif);
   line-height: 1.55;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   position: relative;
 }
 
-/* Faint film-grain noise overlay for texture — pure CSS, no image asset. */
-body::before {
-  content: "";
+/* Faint film-grain texture, pure CSS — no image asset. */
+.grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -144,299 +93,357 @@ body::before {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-.wrap {
-  max-width: var(--max-width);
-  width: 100%;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-5) var(--space-7);
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
+a { color: inherit; }
 
-.wrap-wide { max-width: var(--max-width-wide); }
-
-header.site {
+/* ---- Masthead ---- */
+header.masthead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: var(--max-width);
+  gap: 1rem;
+  max-width: var(--studio-max);
   margin: 0 auto;
-  width: 100%;
-  padding: var(--space-5) var(--space-5) 0;
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  position: relative;
+  z-index: 1;
+}
+.home-link {
+  color: var(--parchment-faint);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.home-link:hover { color: var(--brass); }
+.masthead-badge { color: var(--parchment-faint); }
+
+/* ---- Studio shell ---- */
+.studio {
+  max-width: var(--studio-max);
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 4rem;
   position: relative;
   z-index: 1;
 }
 
-header.site a.home {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: var(--text-sm);
-  transition: color var(--dur-fast) var(--ease-out);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-}
-header.site a.home:hover { color: var(--text); }
-
-h1 {
-  font-size: var(--text-3xl);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin: 0 0 var(--space-2);
-}
-h2 {
-  font-size: var(--text-xl);
+.kicker {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.72rem;
   font-weight: 600;
+  color: var(--brass);
+  margin: 0 0 0.75rem;
+}
+
+.studio-intro h1 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  line-height: 1.05;
   letter-spacing: -0.01em;
-  margin: var(--space-6) 0 var(--space-3);
+  color: var(--parchment);
+  margin: 0 0 0.85rem;
 }
-h3 {
-  font-size: var(--text-lg);
+
+.tagline {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--parchment-muted);
+  max-width: 62ch;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.mono-key {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.85em;
+  color: var(--brass);
+  background: var(--ink-850);
+  border: 1px solid var(--ink-border);
+  border-radius: 4px;
+  padding: 0.05em 0.4em;
+}
+
+/* ---- Toolbar: floating pill bar (ref: 21st.dev "v-toolbar-3" /
+   Tailark smart-editor floating formatting bar) ---- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.85rem 0 1.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.6rem;
+  background: var(--ink-900);
+  border: 1px solid var(--ink-border);
+  border-radius: var(--radius-full);
+}
+.toolbar-group { display: flex; align-items: center; gap: 0.5rem; }
+.toolbar-meta {
+  padding-right: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--parchment-faint);
+}
+
+.btn-pill {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   font-weight: 600;
-  margin: var(--space-4) 0 var(--space-2);
-}
-
-p.tagline {
-  color: var(--text-muted);
-  font-size: var(--text-lg);
-  margin: 0 0 var(--space-6);
-}
-
-/* Gradient text utility — use sparingly, e.g. one word in a heading. */
-.text-gradient {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
-  transition: border-color var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out),
-    transform var(--dur-base) var(--ease-out);
-}
-.card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-md);
-}
-/* Opt-in: add .card--lift for a subtle hover lift on clickable/result cards */
-.card--lift:hover { transform: translateY(-3px); }
-
-button, .btn {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #04150e;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 1.2rem;
-  font-size: var(--text-base);
-  font-weight: 600;
-  font-family: inherit;
+  letter-spacing: 0.02em;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
   transition: transform var(--dur-fast) var(--ease-spring),
     box-shadow var(--dur-base) var(--ease-out),
-    filter var(--dur-fast) var(--ease-out);
+    filter var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
-button:hover, .btn:hover {
-  filter: brightness(1.06);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
+.btn-pill--primary {
+  background: linear-gradient(135deg, var(--brass-strong), var(--brass));
+  color: var(--ink-950);
+  box-shadow: 0 6px 16px -6px rgba(var(--brass-rgb), 0.55);
 }
-button:active, .btn:active { transform: translateY(0) scale(0.98); }
-button:disabled, .btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-  filter: none;
-}
-
-/* Secondary/ghost button — for a page's less-important action */
-.btn-ghost {
+.btn-pill--primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-pill--primary:active { transform: translateY(0) scale(0.97); }
+.btn-pill--ghost {
   background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: none;
+  color: var(--parchment-muted);
+  border-color: var(--ink-border);
 }
-.btn-ghost:hover {
-  background: var(--bg-elevated-2);
-  border-color: var(--border-hover);
-  box-shadow: none;
-  filter: none;
+.btn-pill--ghost:hover {
+  color: var(--parchment);
+  border-color: var(--parchment-faint);
+  background: var(--ink-850);
 }
+.btn-pill--ghost:active { transform: scale(0.97); }
 
-button:focus-visible, .btn:focus-visible,
-a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 2px solid var(--accent);
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--brass);
   outline-offset: 2px;
 }
 
-input, textarea, select {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  padding: 0.6rem 0.75rem;
-  font-family: inherit;
-  font-size: var(--text-base);
-  width: 100%;
-  transition: border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
+/* ---- Editor grid: dark notebook (left) + spotlit page (right) ---- */
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 1.5rem;
+  align-items: stretch;
 }
-input:hover, textarea:hover, select:hover { border-color: var(--border-hover); }
-input:focus, textarea:focus, select:focus {
+@media (max-width: 860px) {
+  .editor-grid { grid-template-columns: 1fr; }
+}
+
+.pane { min-width: 0; }
+
+.editor-pane {
+  background: var(--ink-900);
+  border: 1px solid var(--ink-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pane-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.1rem;
+  background: var(--ink-850);
+  border-bottom: 1px solid var(--ink-border);
+}
+.pane-label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--parchment-muted);
+}
+.pane-hint {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--parchment-faint);
+}
+
+textarea#markdown-input {
+  flex: 1;
+  background: var(--ink-900);
+  background-image: linear-gradient(
+    to right,
+    transparent 0 3.05rem,
+    rgba(var(--brass-rgb), 0.22) 3.05rem 3.07rem,
+    transparent 3.07rem
+  );
+  color: var(--parchment);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  border: none;
+  padding: 1.35rem 1.35rem 1.35rem 3.6rem;
+  height: 70vh;
+  min-height: 420px;
+  resize: vertical;
+  caret-color: var(--brass);
+}
+textarea#markdown-input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18);
+  box-shadow: inset 0 0 0 2px rgba(var(--brass-rgb), 0.35);
+}
+textarea#markdown-input::selection { background: rgba(var(--brass-rgb), 0.3); }
+
+/* ---- Preview: a spotlit "desk" area holding the floating page
+   (ref: 21st.dev "Certificate of Appreciation" — dotted-frame document
+   with a bookmark/ribbon accent — informed the corner-fold + shadow
+   treatment below) ---- */
+.preview-pane { display: flex; }
+.page-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
+  background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(var(--brass-rgb), 0.14), transparent 65%);
+  border-radius: var(--radius-lg);
+}
+.page-stage-badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--parchment-faint);
+}
+.page-stage-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--live);
+  box-shadow: 0 0 0 3px rgba(var(--live-rgb), 0.2);
+  animation: livePulse 2.4s ease-in-out infinite;
+}
+@keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* The preview always looks like white paper with dark text, regardless
+   of the app's own theme, since it represents the printed page. */
+.resume-preview {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 2px;
+  padding: 2.75rem 3rem;
+  min-height: 420px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.55;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.08),
+    0 10px 22px -8px rgba(0, 0, 0, 0.22),
+    0 32px 60px -18px rgba(0, 0, 0, 0.38);
+}
+/* Folded top-right corner, like a real sheet of paper. */
+.resume-preview::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, transparent 50%, #e7e4dd 50.5%);
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
 }
 
-label {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  display: block;
-  margin-bottom: 0.35rem;
-  font-weight: 500;
+.resume-preview h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.85rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.2rem;
+  color: #111;
+}
+.resume-preview h2 {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin: 1.6rem 0 0.6rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1.5px solid #c99a4e;
+  color: #3a3a3a;
+}
+.resume-preview h3 { font-size: 0.95rem; margin: 0.9rem 0 0.3rem; color: #111; font-weight: 700; }
+.resume-preview p { margin: 0.35rem 0; font-size: 0.92rem; }
+.resume-preview ul, .resume-preview ol { margin: 0.3rem 0 0.6rem; padding-left: 1.3rem; font-size: 0.92rem; }
+.resume-preview li { margin: 0.15rem 0; }
+.resume-preview a { color: #93601f; text-decoration: underline; }
+.resume-preview hr { border: none; border-top: 1px solid #ddd; margin: 0.75rem 0; }
+.resume-preview strong { color: #000; }
+.resume-preview code {
+  background: #f2f2f2;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
 }
 
+/* ---- Footer ---- */
 footer.site {
   text-align: center;
-  color: var(--text-faint);
-  font-size: var(--text-xs);
-  padding: var(--space-6) var(--space-5) var(--space-7);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--parchment-faint);
+  padding: 2rem clamp(1rem, 4vw, 2.5rem) 3rem;
   position: relative;
   z-index: 1;
 }
-footer.site a { color: var(--text-faint); transition: color var(--dur-fast) var(--ease-out); }
-footer.site a:hover { color: var(--text-muted); }
-
-.stack { display: flex; flex-direction: column; gap: var(--space-4); }
-.row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-.muted { color: var(--text-muted); }
-.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: var(--space-5) 0;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  font-size: var(--text-xs);
-  font-weight: 600;
-  padding: 0.25em 0.65em;
-  border-radius: var(--radius-full);
-  background: rgba(var(--accent-rgb), 0.14);
-  color: var(--accent);
-  border: 1px solid rgba(var(--accent-rgb), 0.25);
-}
-
-/* ---- Entrance animation (CSS-only, no JS required) ----
-   Add .fade-in to any element; it plays once on page load.
-   Stagger a group by adding .fade-in to each child of a .stack/.row —
-   the nth-child delays below create a natural cascade. */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.fade-in {
-  animation: fadeInUp var(--dur-slow) var(--ease-out) both;
-}
-.stack > .fade-in:nth-child(1), .row > .fade-in:nth-child(1) { animation-delay: 0ms; }
-.stack > .fade-in:nth-child(2), .row > .fade-in:nth-child(2) { animation-delay: 60ms; }
-.stack > .fade-in:nth-child(3), .row > .fade-in:nth-child(3) { animation-delay: 120ms; }
-.stack > .fade-in:nth-child(4), .row > .fade-in:nth-child(4) { animation-delay: 180ms; }
-.stack > .fade-in:nth-child(5), .row > .fade-in:nth-child(5) { animation-delay: 240ms; }
-.stack > .fade-in:nth-child(n+6), .row > .fade-in:nth-child(n+6) { animation-delay: 300ms; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
 }
-
-/* ==== idea-specific rules (preserved from pre-design-system theme.css) ==== */
-/* --- Markdown to PDF Resume --- */
-:root { --max-width: 1100px; }
-
-button.secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-button.secondary:hover { background: var(--bg-elevated); }
-
-.editor-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  align-items: start;
-}
-@media (max-width: 760px) {
-  .editor-grid { grid-template-columns: 1fr; }
-}
-
-.pane { min-width: 0; }
-
-textarea#markdown-input {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  height: 70vh;
-  min-height: 420px;
-  resize: vertical;
-}
-
-/* The preview always looks like white paper with dark text, regardless of
-   the app's own dark/light theme, since it represents the printed page. */
-.resume-preview {
-  background: #ffffff;
-  color: #1a1a1a;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 2rem 2.25rem;
-  min-height: 420px;
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
-}
-.resume-preview h1 { font-size: 1.6rem; margin: 0 0 0.15rem; color: #111; }
-.resume-preview h2 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; padding-bottom: 0.2rem; border-bottom: 1px solid #ccc; color: #111; }
-.resume-preview h3 { font-size: 0.95rem; margin: 0.9rem 0 0.3rem; color: #111; }
-.resume-preview p { margin: 0.35rem 0; font-size: 0.92rem; }
-.resume-preview ul, .resume-preview ol { margin: 0.3rem 0 0.6rem; padding-left: 1.3rem; font-size: 0.92rem; }
-.resume-preview li { margin: 0.15rem 0; }
-.resume-preview a { color: #0b5fff; }
-.resume-preview hr { border: none; border-top: 1px solid #ddd; margin: 0.75rem 0; }
-.resume-preview strong { color: #000; }
-.resume-preview code { background: #f2f2f2; padding: 0.1rem 0.3rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85em; }
 
 /* --- Print: show only the resume preview, full page, no chrome --- */
 @media print {
   .no-print { display: none !important; }
-  body { background: #fff; display: block; min-height: 0; }
-  .wrap { max-width: none; padding: 0; margin: 0; }
+  body { background: #fff; }
+  .studio { max-width: none; padding: 0; margin: 0; }
   .editor-grid { display: block; }
   .editor-pane { display: none !important; }
   .preview-pane { width: 100%; }
+  .page-stage {
+    padding: 0;
+    background: none;
+    display: block;
+  }
   .resume-preview {
     box-shadow: none;
     border: none;
     border-radius: 0;
     padding: 0;
     min-height: 0;
+    max-width: none;
     color: #000;
   }
+  .resume-preview::before { display: none !important; }
   @page { margin: 1.5cm; }
 }

@@ -8,22 +8,46 @@
   <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
-  <header class="site">
-    <a class="home" href="/">&larr; more tools</a>
-  </header>
-  <main class="wrap iifw-wrap">
-    <h1>Is It Friday Yet?</h1>
-    <p class="tagline">A simple one-page site that tells you, dramatically, whether it is Friday yet.</p>
+  <div class="crt-overlay" aria-hidden="true"></div>
 
-    <div class="card iifw-card fade-in">
-      <div class="iifw-answer" id="answer">...</div>
-      <p class="iifw-message" id="message">Checking the calendar&hellip;</p>
-      <p class="iifw-date muted mono" id="today-date"></p>
-    </div>
+  <header class="board-header">
+    <a class="home" href="/">&larr; more tools</a>
+    <span class="board-live"><span class="live-dot" aria-hidden="true"></span>LIVE</span>
+  </header>
+
+  <main class="board-wrap">
+    <p class="board-eyebrow">// weekly status board //</p>
+    <h1 class="board-title">IS IT <span class="board-title-accent">FRIDAY</span> YET?</h1>
+
+    <section class="board" id="board" aria-label="Friday status board">
+      <div class="board-answer-label">TODAY&rsquo;S VERDICT</div>
+
+      <div class="flap-row" id="answer" aria-hidden="true"></div>
+      <span class="sr-only" id="answer-sr">Checking&hellip;</span>
+
+      <p class="board-submessage" id="message">Checking the calendar&hellip;</p>
+
+      <div class="board-rows">
+        <div class="board-row">
+          <span class="board-row-label">Day</span>
+          <span class="board-row-value" id="row-day">&mdash;</span>
+        </div>
+        <div class="board-row">
+          <span class="board-row-label">Date</span>
+          <span class="board-row-value" id="row-date">&mdash;</span>
+        </div>
+        <div class="board-row">
+          <span class="board-row-label">Next Friday</span>
+          <span class="board-row-value" id="row-countdown">&mdash;</span>
+        </div>
+      </div>
+    </section>
   </main>
-  <footer class="site">
+
+  <footer class="board-footer">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
+
   <script src="app.js"></script>
 </body>
 </html>

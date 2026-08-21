@@ -4,12 +4,21 @@
 // user clicks "Copy CSS". Single source of truth, no drift between demo and copy.
 //
 // `demoClass` must match the class name defined inside `css`.
+// `category` groups animations for the sidebar/chip filter — one of the ids
+// listed in CATEGORIES below.
+
+const CATEGORIES = [
+  { id: "entrance", label: "Entrances", accent: "#818cf8", accentRgb: "129, 140, 248" },
+  { id: "exit", label: "Exits", accent: "#fbbf24", accentRgb: "251, 191, 36" },
+  { id: "attention", label: "Attention Seekers", accent: "#ff7eb0", accentRgb: "255, 126, 176" }
+];
 
 const ANIMATIONS = [
   {
     id: "fade-in",
     name: "Fade In",
     demoClass: "anim-fade-in",
+    category: "entrance",
     css: `.fade-in {
   animation: fadeIn 0.9s ease both;
 }
@@ -23,6 +32,7 @@ const ANIMATIONS = [
     id: "fade-out",
     name: "Fade Out",
     demoClass: "anim-fade-out",
+    category: "exit",
     css: `.fade-out {
   animation: fadeOut 0.9s ease both;
 }
@@ -36,6 +46,7 @@ const ANIMATIONS = [
     id: "slide-in-left",
     name: "Slide In Left",
     demoClass: "anim-slide-in-left",
+    category: "entrance",
     css: `.slide-in-left {
   animation: slideInLeft 0.6s cubic-bezier(.25,.8,.25,1) both;
 }
@@ -49,6 +60,7 @@ const ANIMATIONS = [
     id: "slide-in-right",
     name: "Slide In Right",
     demoClass: "anim-slide-in-right",
+    category: "entrance",
     css: `.slide-in-right {
   animation: slideInRight 0.6s cubic-bezier(.25,.8,.25,1) both;
 }
@@ -62,6 +74,7 @@ const ANIMATIONS = [
     id: "slide-in-up",
     name: "Slide In Up",
     demoClass: "anim-slide-in-up",
+    category: "entrance",
     css: `.slide-in-up {
   animation: slideInUp 0.6s cubic-bezier(.25,.8,.25,1) both;
 }
@@ -75,6 +88,7 @@ const ANIMATIONS = [
     id: "slide-in-down",
     name: "Slide In Down",
     demoClass: "anim-slide-in-down",
+    category: "entrance",
     css: `.slide-in-down {
   animation: slideInDown 0.6s cubic-bezier(.25,.8,.25,1) both;
 }
@@ -88,6 +102,7 @@ const ANIMATIONS = [
     id: "bounce",
     name: "Bounce",
     demoClass: "anim-bounce",
+    category: "attention",
     css: `.bounce {
   animation: bounce 1s ease infinite;
 }
@@ -102,6 +117,7 @@ const ANIMATIONS = [
     id: "pulse",
     name: "Pulse",
     demoClass: "anim-pulse",
+    category: "attention",
     css: `.pulse {
   animation: pulse 1.1s ease infinite;
 }
@@ -116,6 +132,7 @@ const ANIMATIONS = [
     id: "shake",
     name: "Shake",
     demoClass: "anim-shake",
+    category: "attention",
     css: `.shake {
   animation: shake 0.7s ease infinite;
 }
@@ -130,6 +147,7 @@ const ANIMATIONS = [
     id: "spin",
     name: "Spin",
     demoClass: "anim-spin",
+    category: "attention",
     css: `.spin {
   animation: spin 1s linear infinite;
 }
@@ -143,6 +161,7 @@ const ANIMATIONS = [
     id: "flip-in-x",
     name: "Flip In X",
     demoClass: "anim-flip-in-x",
+    category: "entrance",
     css: `.flip-in-x {
   animation: flipInX 0.8s ease both;
   backface-visibility: visible;
@@ -159,6 +178,7 @@ const ANIMATIONS = [
     id: "flip-in-y",
     name: "Flip In Y",
     demoClass: "anim-flip-in-y",
+    category: "entrance",
     css: `.flip-in-y {
   animation: flipInY 0.8s ease both;
   backface-visibility: visible;
@@ -175,6 +195,7 @@ const ANIMATIONS = [
     id: "zoom-in",
     name: "Zoom In",
     demoClass: "anim-zoom-in",
+    category: "entrance",
     css: `.zoom-in {
   animation: zoomIn 0.6s ease both;
 }
@@ -188,6 +209,7 @@ const ANIMATIONS = [
     id: "zoom-out",
     name: "Zoom Out",
     demoClass: "anim-zoom-out",
+    category: "exit",
     css: `.zoom-out {
   animation: zoomOut 0.6s ease both;
 }
@@ -201,6 +223,7 @@ const ANIMATIONS = [
     id: "rotate-in",
     name: "Rotate In",
     demoClass: "anim-rotate-in",
+    category: "entrance",
     css: `.rotate-in {
   animation: rotateIn 0.7s ease both;
   transform-origin: center;
@@ -215,6 +238,7 @@ const ANIMATIONS = [
     id: "wobble",
     name: "Wobble",
     demoClass: "anim-wobble",
+    category: "attention",
     css: `.wobble {
   animation: wobble 1s ease infinite;
 }
@@ -232,6 +256,7 @@ const ANIMATIONS = [
     id: "heartbeat",
     name: "Heartbeat",
     demoClass: "anim-heartbeat",
+    category: "attention",
     css: `.heartbeat {
   animation: heartbeat 1.1s ease infinite;
 }
@@ -248,6 +273,7 @@ const ANIMATIONS = [
     id: "swing",
     name: "Swing",
     demoClass: "anim-swing",
+    category: "attention",
     css: `.swing {
   animation: swing 1s ease infinite;
   transform-origin: top center;
@@ -265,6 +291,7 @@ const ANIMATIONS = [
     id: "rubber-band",
     name: "Rubber Band",
     demoClass: "anim-rubber-band",
+    category: "attention",
     css: `.rubber-band {
   animation: rubberBand 0.9s ease infinite;
 }
@@ -281,6 +308,7 @@ const ANIMATIONS = [
     id: "flash",
     name: "Flash",
     demoClass: "anim-flash",
+    category: "attention",
     css: `.flash {
   animation: flash 1s ease infinite;
 }
@@ -293,5 +321,5 @@ const ANIMATIONS = [
 ];
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { ANIMATIONS };
+  module.exports = { ANIMATIONS, CATEGORIES };
 }

@@ -1,4 +1,4 @@
-/* Water Intake Gamified
+/* Water Intake Gamified — "Hydration Grove"
  * Core date/streak/state logic and tree-svg rendering are pure functions
  * (no DOM, no localStorage inside them) so they can be sanity-checked with
  * plain `node`. DOM + localStorage wiring lives in the guarded block below.
@@ -96,60 +96,158 @@ function getStageIndex(state) {
   return 5;
 }
 
+/* ---- Tree rendering ----
+ * Bespoke procedural SVG: a small fixed-angle fractal branch structure
+ * (inspired by 21st.dev's "Fractal Bloom Tree" card — thin branching
+ * linework fanning out from a base point) topped with hand-built organic
+ * "blob" leaf clusters (a jittered-radius polygon smoothed with quadratic
+ * curves, not plain circles). Everything below is deterministic (no
+ * Math.random) so the same stageIndex always produces the same markup —
+ * that keeps it snapshot-testable with plain `node`.
+ */
+
+var BLOB_JITTER = [1, 0.86, 1.1, 0.9, 1.14, 0.84, 1.06, 0.94];
+
+function blobPath(cx, cy, r, seed) {
+  var n = BLOB_JITTER.length;
+  var pts = [];
+  var i;
+  for (i = 0; i < n; i++) {
+    var angle = (Math.PI * 2 * i) / n;
+    var jitter = BLOB_JITTER[(i + seed) % n];
+    var rad = r * jitter;
+    pts.push([cx + Math.cos(angle) * rad, cy + Math.sin(angle) * rad * 0.9]);
+  }
+  var start = [(pts[0][0] + pts[n - 1][0]) / 2, (pts[0][1] + pts[n - 1][1]) / 2];
+  var d = 'M ' + round(start[0]) + ' ' + round(start[1]) + ' ';
+  for (i = 0; i < n; i++) {
+    var p = pts[i];
+    var next = pts[(i + 1) % n];
+    var mid = [(p[0] + next[0]) / 2, (p[1] + next[1]) / 2];
+    d += 'Q ' + round(p[0]) + ' ' + round(p[1]) + ' ' + round(mid[0]) + ' ' + round(mid[1]) + ' ';
+  }
+  return d + 'Z';
+}
+
 function wrapSvg(size, parts) {
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size +
-    '" width="' + size + '" height="' + size + '">' + parts.join('') + '</svg>';
+    '" width="' + size + '" height="' + size + '" class="grove-tree-svg">' + parts.join('') + '</svg>';
+}
+
+var LEAF_COLORS = ['#34d17a', '#22b06a', '#0d7a4a', '#1c9a5c', '#3fce85', '#178f52'];
+
+function addBranch(parts, tips, x, y, angleDeg, len, width, depth, maxDepth) {
+  var rad = (angleDeg * Math.PI) / 180;
+  var x2 = round(x + Math.sin(rad) * len);
+  var y2 = round(y - Math.cos(rad) * len);
+  parts.push(
+    '<path d="M ' + round(x) + ' ' + round(y) + ' L ' + x2 + ' ' + y2 +
+      '" stroke="url(#trunkGrad)" stroke-width="' + round(Math.max(1.2, width)) +
+      '" stroke-linecap="round" fill="none" />'
+  );
+  if (depth >= maxDepth) {
+    tips.push({ x: x2, y: y2, r: Math.max(6, width * 2.8) });
+    return;
+  }
+  var spread = 20 + depth * 6;
+  addBranch(parts, tips, x2, y2, angleDeg - spread, len * 0.72, width * 0.66, depth + 1, maxDepth);
+  addBranch(parts, tips, x2, y2, angleDeg + spread, len * 0.72, width * 0.66, depth + 1, maxDepth);
+  if (depth === 0 && maxDepth >= 2) {
+    addBranch(parts, tips, x2, y2, angleDeg, len * 0.62, width * 0.6, depth + 1, maxDepth);
+  }
 }
 
 function buildTreeSVG(stageIndex) {
   var size = 240;
-  var groundY = 205;
+  var groundY = 200;
   var parts = [];
-  parts.push('<rect x="0" y="' + groundY + '" width="' + size + '" height="' + (size - groundY) + '" fill="#4a3624" opacity="0.4" />');
+
+  parts.push(
+    '<defs>' +
+      '<radialGradient id="groundGlow" cx="50%" cy="50%" r="50%">' +
+        '<stop offset="0%" stop-color="#34d17a" stop-opacity="' + round(0.05 + stageIndex * 0.045) + '" />' +
+        '<stop offset="100%" stop-color="#34d17a" stop-opacity="0" />' +
+      '</radialGradient>' +
+      '<linearGradient id="trunkGrad" x1="0" y1="1" x2="0" y2="0">' +
+        '<stop offset="0%" stop-color="#3d2a1a" />' +
+        '<stop offset="100%" stop-color="#7a5636" />' +
+      '</linearGradient>' +
+      '<linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#4ee08c" />' +
+        '<stop offset="100%" stop-color="#0f8a4c" />' +
+      '</linearGradient>' +
+      '<filter id="softEdge" x="-30%" y="-30%" width="160%" height="160%">' +
+        '<feGaussianBlur stdDeviation="0.6" />' +
+      '</filter>' +
+      '<filter id="glow" x="-80%" y="-80%" width="260%" height="260%">' +
+        '<feGaussianBlur stdDeviation="3" result="blur" />' +
+        '<feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>' +
+      '</filter>' +
+    '</defs>'
+  );
+
+  parts.push('<ellipse cx="120" cy="' + groundY + '" rx="86" ry="16" fill="url(#groundGlow)" />');
+  parts.push('<ellipse cx="120" cy="' + (groundY + 4) + '" rx="46" ry="10" fill="#241c14" opacity="0.55" />');
 
   if (stageIndex <= 0) {
-    parts.push('<ellipse cx="120" cy="' + (groundY + 2) + '" rx="16" ry="5" fill="#5b4632" />');
-    parts.push('<circle cx="120" cy="' + (groundY - 3) + '" r="5" fill="#8a6d4b" />');
+    parts.push('<ellipse cx="120" cy="' + (groundY - 1) + '" rx="7" ry="4" fill="#5b4632" />');
+    parts.push('<circle cx="120" cy="' + (groundY - 4) + '" r="3.2" fill="#8ee6ac" filter="url(#glow)" />');
     return wrapSvg(size, parts);
   }
 
-  var trunkHeight = 14 + stageIndex * 24;
-  var trunkWidth = 6 + stageIndex * 2.5;
-  var trunkX = 120 - trunkWidth / 2;
-  var trunkY = groundY - trunkHeight;
-  parts.push('<rect x="' + round(trunkX) + '" y="' + round(trunkY) + '" width="' + round(trunkWidth) +
-    '" height="' + round(trunkHeight) + '" rx="3" fill="#6b4a2f" />');
+  var maxDepth = stageIndex <= 1 ? 1 : stageIndex === 2 ? 2 : 3;
+  var initialLen = 22 + stageIndex * 11;
+  var initialWidth = 3 + stageIndex * 1.4;
+  var tips = [];
+  addBranch(parts, tips, 120, groundY, 0, initialLen, initialWidth, 0, maxDepth);
 
-  var canopyCy = trunkY - 6;
-  var baseRadius = 10 + stageIndex * 11;
-  var canopyOffsets = [
-    { dx: 0, dy: 0, scale: 1 },
-    { dx: -baseRadius * 0.6, dy: baseRadius * 0.25, scale: 0.72 },
-    { dx: baseRadius * 0.6, dy: baseRadius * 0.25, scale: 0.72 },
-    { dx: 0, dy: -baseRadius * 0.55, scale: 0.65 }
-  ];
-  var greens = ['#4ade80', '#34d399', '#22c55e', '#16a34a'];
-  canopyOffsets.forEach(function (o, i) {
-    if (stageIndex < 2 && i > 1) return;
-    var r = baseRadius * o.scale;
-    var cx = 120 + o.dx;
-    var cy = canopyCy + o.dy;
-    parts.push('<circle cx="' + round(cx) + '" cy="' + round(cy) + '" r="' + round(r) + '" fill="' + greens[i % greens.length] + '" />');
-  });
+  parts.push(
+    '<path d="M 100 ' + groundY + ' q 3 -10 7 -1" stroke="#2f7a45" stroke-width="2" fill="none" stroke-linecap="round" />' +
+    '<path d="M 138 ' + groundY + ' q -3 -9 -7 -1" stroke="#2f7a45" stroke-width="2" fill="none" stroke-linecap="round" />'
+  );
+
+  if (stageIndex === 1) {
+    tips.forEach(function (t, i) {
+      parts.push(
+        '<ellipse cx="' + round(t.x) + '" cy="' + round(t.y) + '" rx="6" ry="3" fill="' + LEAF_COLORS[i % LEAF_COLORS.length] +
+          '" transform="rotate(' + (i % 2 === 0 ? -30 : 30) + ' ' + round(t.x) + ' ' + round(t.y) + ')" />'
+      );
+    });
+  } else {
+    var cx = 0, cy = 0;
+    tips.forEach(function (t) { cx += t.x; cy += t.y; });
+    cx = round(cx / tips.length);
+    cy = round(cy / tips.length);
+    var canopyR = 12 + (stageIndex - 1) * 13;
+    parts.push('<path d="' + blobPath(cx, cy, canopyR, 1) + '" fill="url(#leafGrad)" filter="url(#softEdge)" opacity="0.92" />');
+    var foliageScale = stageIndex >= 4 ? 1.05 : 0.85;
+    tips.forEach(function (t, i) {
+      var r = t.r * foliageScale;
+      parts.push('<path d="' + blobPath(t.x, t.y, r, i) + '" fill="' + LEAF_COLORS[i % LEAF_COLORS.length] +
+        '" opacity="0.85" filter="url(#softEdge)" />');
+    });
+  }
 
   if (stageIndex >= 5) {
-    var flowerSpots = [
-      { dx: -baseRadius * 0.5, dy: -baseRadius * 0.2 },
-      { dx: baseRadius * 0.45, dy: -baseRadius * 0.1 },
-      { dx: 0, dy: baseRadius * 0.3 },
-      { dx: -baseRadius * 0.15, dy: -baseRadius * 0.5 },
-      { dx: baseRadius * 0.2, dy: baseRadius * 0.5 }
-    ];
-    flowerSpots.forEach(function (f) {
-      var cx = 120 + f.dx;
-      var cy = canopyCy + f.dy;
-      parts.push('<circle cx="' + round(cx) + '" cy="' + round(cy) + '" r="4.5" fill="#f9a8d4" />');
+    var bloomSpots = tips.filter(function (_, i) { return i % 2 === 0; });
+    bloomSpots.forEach(function (t, i) {
+      var petalColors = ['#ff8fb3', '#ffd166'];
+      var color = petalColors[i % petalColors.length];
+      var fx = t.x + (i % 2 === 0 ? -4 : 4);
+      var fy = t.y - 4;
+      var petalMarkup = '';
+      for (var p = 0; p < 5; p++) {
+        var pa = (Math.PI * 2 * p) / 5;
+        petalMarkup += '<circle cx="' + round(fx + Math.cos(pa) * 3.4) + '" cy="' + round(fy + Math.sin(pa) * 3.4) +
+          '" r="2.6" fill="' + color + '" />';
+      }
+      petalMarkup += '<circle cx="' + round(fx) + '" cy="' + round(fy) + '" r="1.6" fill="#fff6d9" />';
+      parts.push('<g opacity="0.95">' + petalMarkup + '</g>');
     });
+    parts.push(
+      '<circle class="tree-spark" cx="80" cy="' + round(groundY - 150) + '" r="2.4" fill="#ffe38a" filter="url(#glow)" />' +
+      '<circle class="tree-spark tree-spark--slow" cx="154" cy="' + round(groundY - 130) + '" r="2" fill="#8ee6ac" filter="url(#glow)" />'
+    );
   }
 
   return wrapSvg(size, parts);
@@ -159,6 +257,7 @@ function buildTreeSVG(stageIndex) {
 if (typeof document !== 'undefined') {
   (function () {
     var treeStage = document.getElementById('treeStage');
+    var dropletRow = document.getElementById('dropletRow');
     var progressText = document.getElementById('progressText');
     var streakText = document.getElementById('streakText');
     var drinkBtn = document.getElementById('drinkBtn');
@@ -194,27 +293,65 @@ if (typeof document !== 'undefined') {
     var state = rolloverIfNewDay(loadState(), todayKey());
     saveState(state);
 
+    function pulseTree() {
+      treeStage.classList.remove('is-growing');
+      // eslint-disable-next-line no-unused-expressions
+      void treeStage.offsetWidth; // force reflow so the animation restarts every time
+      treeStage.classList.add('is-growing');
+    }
+
+    function renderDroplets() {
+      var total = Math.max(1, Math.min(20, state.goal));
+      var filled = Math.min(state.countToday, total);
+      var html = '';
+      for (var i = 0; i < total; i++) {
+        var cls = 'droplet' + (i < filled ? ' is-filled' : '');
+        if (i === filled - 1) cls += ' is-newest';
+        html += '<span class="' + cls + '"></span>';
+      }
+      dropletRow.innerHTML = html;
+    }
+
+    function celebrateBloom() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var layer = document.createElement('div');
+      layer.className = 'petal-burst';
+      layer.setAttribute('aria-hidden', 'true');
+      var colors = ['#ff8fb3', '#ffd166', '#8ee6ac', '#8fd6ff'];
+      for (var i = 0; i < 16; i++) {
+        var petal = document.createElement('span');
+        petal.className = 'petal';
+        petal.style.left = (Math.random() * 100) + '%';
+        petal.style.background = colors[i % colors.length];
+        petal.style.animationDelay = (Math.random() * 0.5) + 's';
+        petal.style.animationDuration = (1.6 + Math.random() * 1) + 's';
+        layer.appendChild(petal);
+      }
+      document.body.appendChild(layer);
+      setTimeout(function () { layer.remove(); }, 3000);
+    }
+
     function render() {
       var stageIndex = getStageIndex(state);
       var meta = STAGE_META[stageIndex];
-      // Wrap each freshly-rendered tree in a tier2 [data-reveal] leaf so it
-      // fades + lifts into view on every render (initial load AND every
-      // drink/undo/reset) — a lightweight "growth" pop reusing the shared
-      // reveal primitive instead of a bespoke animation.
-      treeStage.innerHTML = '<div data-reveal>' + buildTreeSVG(stageIndex) + '</div>';
-      if (typeof window !== 'undefined' && window.Tier2) window.Tier2.initReveal(treeStage);
+      treeStage.innerHTML = buildTreeSVG(stageIndex);
+      pulseTree();
+      renderDroplets();
       var percent = Math.min(100, Math.round(getPercent(state)));
       progressText.textContent = state.countToday + ' of ' + state.goal + ' glasses today (' + percent + '%) — ' + meta.label;
       streakText.textContent = state.streak > 0
         ? '🔥 ' + state.streak + ' day' + (state.streak === 1 ? '' : 's') + ' streak'
         : 'Hit your goal today to start a streak.';
+      streakText.classList.toggle('is-active', state.streak > 0);
       goalGlasses.value = state.goal;
     }
 
     drinkBtn.addEventListener('click', function () {
+      var prevStage = getStageIndex(state);
       state = applyDrink(state, todayKey());
       saveState(state);
       render();
+      if (prevStage < 5 && getStageIndex(state) === 5) celebrateBloom();
     });
 
     undoBtn.addEventListener('click', function () {

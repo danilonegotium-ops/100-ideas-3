@@ -12,42 +12,90 @@
     <a class="home" href="/">&larr; more tools</a>
   </header>
   <main class="wrap">
-    <h1>Daily Riddle Site</h1>
-    <p class="tagline">A new riddle every day, the same one for every visitor. Come back tomorrow for another.</p>
-
-    <div class="card fade-in">
-      <div class="stack">
-        <span class="muted mono" id="dr-date"></span>
-        <p class="riddle-text" id="dr-riddle-text"></p>
-        <div class="row">
-          <button type="button" id="dr-reveal">Reveal answer</button>
-        </div>
-        <p class="muted riddle-answer" id="dr-answer" hidden></p>
-      </div>
+    <div class="hero">
+      <span class="pixel-gem hero__mark" aria-hidden="true"></span>
+      <h1>Daily Riddle</h1>
+      <p class="tagline">A new riddle every day, the same one for every visitor. Come back tomorrow for another.</p>
     </div>
+
+    <section class="quest-card pixel-frame fade-in" aria-label="Today's riddle">
+      <div class="pixel-panel">
+        <div class="quest-card__head">
+          <span class="quest-card__label">Today&rsquo;s Riddle</span>
+          <span class="pixel-chip pixel-chip--gold mono" id="dr-date"></span>
+        </div>
+
+        <div class="dialogue-box">
+          <span class="pixel-gem dialogue-box__mark" aria-hidden="true"></span>
+          <p class="riddle-text" id="dr-riddle-text"></p>
+        </div>
+
+        <div class="reveal-row">
+          <span class="btn-pixel-wrap">
+            <button type="button" class="btn-pixel" id="dr-reveal">Reveal answer</button>
+          </span>
+        </div>
+
+        <div class="vault">
+          <p class="riddle-answer" id="dr-answer" hidden></p>
+          <div class="vault__locked" aria-hidden="true">
+            <span class="pixel-gem pixel-gem--cyan" style="--u: 2px;"></span>
+            Sealed &mdash; press reveal
+          </div>
+          <div class="vault__burst" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <h2>Archive</h2>
-    <div class="card">
-      <div class="stack">
-        <div class="row">
-          <div style="flex: 1; min-width: 160px;">
-            <label for="dr-archive-date">Pick a past date</label>
-            <input type="date" id="dr-archive-date" />
-          </div>
-        </div>
-        <div class="row">
-          <button type="button" id="dr-archive-view">View that day's riddle</button>
-        </div>
-        <div class="stack" id="dr-archive-result" hidden>
-          <span class="muted mono" id="dr-archive-date-label"></span>
-          <p class="riddle-text" id="dr-archive-text"></p>
+    <section class="pixel-frame" aria-label="Riddle archive">
+      <div class="pixel-panel">
+        <div class="stack">
           <div class="row">
-            <button type="button" id="dr-archive-reveal">Reveal answer</button>
+            <div class="field">
+              <label for="dr-archive-date">Pick a past date</label>
+              <input type="date" id="dr-archive-date" />
+            </div>
           </div>
-          <p class="muted riddle-answer" id="dr-archive-answer" hidden></p>
+          <div class="row">
+            <span class="btn-pixel-wrap">
+              <button type="button" class="btn-pixel btn-pixel--ghost" id="dr-archive-view">View that day&rsquo;s riddle</button>
+            </span>
+          </div>
+
+          <div class="stack" id="dr-archive-result" hidden>
+            <div class="quest-card__head">
+              <span class="quest-card__label">Selected Day</span>
+              <span class="pixel-chip mono" id="dr-archive-date-label"></span>
+            </div>
+
+            <div class="dialogue-box">
+              <span class="pixel-gem pixel-gem--cyan dialogue-box__mark" aria-hidden="true"></span>
+              <p class="riddle-text" id="dr-archive-text"></p>
+            </div>
+
+            <div class="reveal-row">
+              <span class="btn-pixel-wrap">
+                <button type="button" class="btn-pixel" id="dr-archive-reveal">Reveal answer</button>
+              </span>
+            </div>
+
+            <div class="vault">
+              <p class="riddle-answer" id="dr-archive-answer" hidden></p>
+              <div class="vault__locked" aria-hidden="true">
+                <span class="pixel-gem pixel-gem--cyan" style="--u: 2px;"></span>
+                Sealed &mdash; press reveal
+              </div>
+              <div class="vault__burst" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
   <footer class="site">
     <span>Built solo. No tracking, no signup required.</span>

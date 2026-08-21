@@ -1,43 +1,80 @@
 <!doctype html>
-<html lang="en" data-accent="blue">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Favicon Generator</title>
   <meta name="description" content="Turn any image into all the favicon sizes modern browsers and devices expect, generated and downloaded entirely in your browser." />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
-  <canvas class="mesh-bg-canvas" data-mesh-bg="rgba(96,165,250,0.5),rgba(34,211,238,0.32),rgba(167,139,250,0.28)"></canvas>
+  <div class="reg-mark reg-tl" aria-hidden="true"></div>
+  <div class="reg-mark reg-tr" aria-hidden="true"></div>
+  <div class="reg-mark reg-bl" aria-hidden="true"></div>
+  <div class="reg-mark reg-br" aria-hidden="true"></div>
+
   <header class="site">
     <a class="home" href="/">&larr; more tools</a>
-  </header>
-  <main class="wrap">
-    <h1>Favicon Generator</h1>
-    <p class="tagline">Turn any image into all the favicon sizes modern browsers and devices expect, generated and downloaded entirely in your browser.</p>
-
-    <div class="gradient-border">
-      <div class="card stack">
-        <div class="stack" data-spotlight>
-          <label for="image-input">Choose a source image (square images work best)</label>
-          <input type="file" id="image-input" accept="image/*" />
-        </div>
-
-        <p id="status-msg" class="muted" style="margin: 0; font-size: 0.9rem;"></p>
-
-        <canvas id="work-canvas" hidden></canvas>
-
-        <div id="results" class="fg-results"></div>
-
-        <button id="download-all-btn" class="btn btn-glow" hidden>Download all sizes</button>
-      </div>
+    <div class="meta-chips" aria-hidden="true">
+      <span class="chip">client-side</span>
+      <span class="chip">no upload</span>
     </div>
+  </header>
+
+  <main class="wrap">
+    <div class="title-block">
+      <h1>Favicon<span class="cursor-blink">_</span></h1>
+      <p class="tagline">Turn any image into every favicon size modern browsers &amp; devices expect &mdash; generated and downloaded entirely in your browser.</p>
+    </div>
+
+    <div class="ruler" aria-hidden="true">
+      <span style="left: 0%;">0</span>
+      <span style="left: 25%;">25</span>
+      <span style="left: 50%;">50</span>
+      <span style="left: 75%;">75</span>
+      <span style="left: 100%; transform: translateX(-100%);">100</span>
+    </div>
+
+    <section class="panel" id="upload-panel">
+      <div class="panel-tab">
+        <span class="tab-label"><span class="glyph">&#9670;</span>input.source</span>
+        <span class="tab-hint">square images recommended</span>
+      </div>
+
+      <div class="dropzone" id="dropzone">
+        <svg class="dz-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 15V4" />
+          <path d="M7 9l5-5 5 5" />
+          <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+        </svg>
+        <p class="dz-title">Drop image or click to browse</p>
+        <p class="dz-sub">PNG &middot; JPG &middot; SVG &middot; WEBP</p>
+        <input type="file" id="image-input" class="dz-input" accept="image/*" aria-label="Choose a source image (square images work best)" />
+      </div>
+
+      <p id="status-msg" class="status-line"><span class="prompt">$</span><span id="status-text">awaiting input</span><span class="cursor-blink">_</span></p>
+    </section>
+
+    <canvas id="work-canvas" hidden></canvas>
+
+    <section class="results" id="results-section" hidden>
+      <div class="section-label"><span>output &mdash; true relative scale</span><span class="hint">hover to inspect</span></div>
+      <div id="scale-strip" class="scale-strip"></div>
+
+      <div class="section-label"><span>manifest</span></div>
+      <div id="manifest" class="manifest"></div>
+
+      <button id="download-all-btn" class="btn btn-primary" hidden>Download all sizes</button>
+    </section>
   </main>
+
   <footer class="site">
-    <span>Built solo. No tracking, no signup required.</span>
+    <span class="tf-cell">scale: n.t.s.</span>
+    <span class="tf-cell">sheet: 1/1</span>
+    <span class="tf-cell">rev: a</span>
+    <span class="tf-cell">Built solo. No tracking, no signup required.</span>
   </footer>
-  <script src="tier2.js" defer></script>
+
   <script src="app.js"></script>
 </body>
 </html>

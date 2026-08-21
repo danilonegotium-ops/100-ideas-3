@@ -1,39 +1,68 @@
 <!doctype html>
-<html lang="en" data-accent="violet">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CSS Animation Library</title>
-  <meta name="description" content="A collection of copy-paste CSS animations for web developers. Click any card to copy the @keyframes and class straight to your clipboard." />
+  <title>CSS Animation Library — motion, ready to paste</title>
+  <meta name="description" content="A collection of copy-paste CSS animations for web developers. Browse by category, preview each one live, and copy the exact @keyframes straight to your clipboard." />
+  <meta name="theme-color" content="#09090b" />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
-  <canvas class="mesh-bg-canvas" data-mesh-bg="rgba(167,139,250,0.5),rgba(96,165,250,0.3),rgba(251,113,133,0.25)"></canvas>
-  <header class="site">
-    <a class="home" href="/">&larr; more tools</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">&#9635;</span>
+      <span class="brand-name">CSS Animation Library</span>
+    </a>
+    <a class="home-link" href="/">&larr; more tools</a>
   </header>
-  <main class="wrap">
-    <h1>CSS Animation Library</h1>
-    <p class="tagline">A collection of copy-paste CSS animations for web developers. Click "Copy CSS" on any card to grab the exact code.</p>
 
-    <div class="gradient-border">
-      <div class="card" data-spotlight>
-        <div class="row" style="justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <label for="search" style="margin: 0;">Filter</label>
-          <span class="muted mono" id="count"></span>
-        </div>
-        <input type="text" id="search" placeholder="Search animations (e.g. fade, bounce, spin)..." />
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-head">Browse</div>
+      <nav class="cat-nav" id="catNav" aria-label="Filter by category"></nav>
+      <div class="sidebar-note">
+        <p>Every card plays real CSS &mdash; the exact <code>@keyframes</code> block is what lands on your clipboard when you hit <strong>Copy CSS</strong>.</p>
       </div>
-    </div>
+    </aside>
 
-    <div class="anim-grid" id="grid"></div>
-  </main>
-  <footer class="site">
+    <main class="content">
+      <div class="hero">
+        <h1>Motion, ready to paste<span class="hero-dot" aria-hidden="true">.</span></h1>
+        <p class="tagline">20 hand-written CSS animations &mdash; entrances, exits and attention-seekers. Preview each one live, then copy the exact code.</p>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-shell">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6" />
+            <path d="M14 14L18 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <label for="search" class="sr-only">Search animations</label>
+          <input type="text" id="search" placeholder="Search animations (e.g. fade, bounce, spin)..." autocomplete="off" spellcheck="false" />
+          <kbd class="key-hint">/</kbd>
+        </div>
+        <span class="result-count mono" id="count"></span>
+      </div>
+
+      <div class="cat-chips" id="catChips" aria-label="Filter by category"></div>
+
+      <div class="anim-grid" id="grid"></div>
+
+      <p class="empty-state" id="emptyState" hidden>
+        No animations match &ldquo;<span id="emptyQuery"></span>&rdquo;. Try <em>spin</em>, <em>fade</em>, or clear the category filter.
+      </p>
+    </main>
+  </div>
+
+  <footer class="site-footer">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
+
   <script src="data.js"></script>
-  <script src="tier2.js" defer></script>
   <script src="app.js"></script>
 </body>
 </html>

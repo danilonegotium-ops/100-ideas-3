@@ -28,7 +28,7 @@ if (typeof module !== "undefined" && module.exports) {
   const nameInput = document.getElementById("display-name");
   const captionInput = document.getElementById("caption");
   const imageInput = document.getElementById("image-input");
-  const tabButtons = document.querySelectorAll(".tab-btn");
+  const tabButtons = document.querySelectorAll(".switch-btn");
   const frames = document.querySelectorAll(".mockup-frame");
 
   // 1. Inject icons (data-driven, from data.js) into every icon slot.

@@ -1,128 +1,88 @@
 /* ============================================================
-   TIER 1 — "Refined Minimal"
-   Shared design tokens + base styles for all Wave 1/2 static tools.
+   RECIPE SCALER — bespoke "kitchen index card" identity.
 
-   This file is the DEFAULT for every static idea. It is copied into each
-   idea folder and the accent/radius tokens may be nudged per-idea, but the
-   scale (spacing/type/motion) should stay consistent across all 39 tools so
-   the whole "100 ideas" project reads as one family.
+   Not the shared Tier-1 token system. This is a one-off design pass:
+   a warm, paper-and-ink cookbook aesthetic instead of a dark SaaS panel.
 
-   Existing selectors (.card, .btn, .stack, .row, input/textarea/select,
-   label, header.site, footer.site) are preserved byte-for-byte in meaning —
-   only their styling is upgraded — so dropping this file into an idea
-   folder that already uses those classes never breaks markup.
-
-   Want more visual ambition (glass panels, animated gradient borders,
-   spotlight-follows-cursor, canvas mesh backgrounds, 3D tilt, bento grids)?
-   See tier2.css + tier2.js and _shared/static-template/DESIGN_SYSTEM.md.
+   Design references (translated by hand into vanilla CSS, nothing copied
+   verbatim — this is a static, build-free page):
+   - 21st.dev "Texts" category: mixed-weight editorial headlines that pair
+     a heavy grotesque word with an italic serif accent word (e.g. "Design
+     Limitless"). Borrowed the *technique* (h1 + <em> in a serif italic),
+     not any specific component's markup.
+   - 21st.dev "Numbers" category: bold tabular-number stat chips in bordered
+     cards (e.g. "68", "43" in large serif/mono digits inside a soft card).
+     Reused for the scale-factor badge (×2.0).
+   - 21st.dev "Table"/"List" categories: clean bordered row lists with a
+     clear left-to-right hierarchy. Adapted into the before -> after
+     ingredient comparison rows below.
+   - The ruled index card, red margin rule, and torn-paper top edge are a
+     direct translation of a physical recipe card into CSS (no equivalent
+     component existed on 21st.dev — this is where "specific to what the
+     app is" took over from "specific to what I found").
    ============================================================ */
 
 :root {
-  /* ---- Color: surfaces ---- */
-  --bg: #0a0b0d;
-  --bg-elevated: #131519;
-  --bg-elevated-2: #1a1d22;
-  --border: #23262c;
-  --border-hover: #343841;
+  /* ---- Color: paper & ink ---- */
+  --paper: #f8f1e4;
+  --paper-elevated: #fffdf7;
+  --paper-shade: #f0e6d2;
+  --ink: #2b2013;
+  --ink-soft: #4d4030;
+  --ink-muted: #8a7a63;
+  --ink-faint: #b7a98d;
 
-  /* ---- Color: text ---- */
-  --text: #f2f4f7;
-  --text-muted: #9aa1ab;
-  --text-faint: #6b7280;
+  --line: #e7d9bd;
+  --line-strong: #d8c49f;
 
-  /* ---- Color: accent (override per-idea if it helps differentiate) ---- */
-  --accent: #34d399;
-  --accent-strong: #10b981;
-  --accent-rgb: 52, 211, 153; /* keep in sync with --accent, used for glows */
-  --danger: #f87171;
-  --danger-rgb: 248, 113, 113;
+  /* ---- Color: accents (food-adjacent, not tech-adjacent) ---- */
+  --paprika: #c1440e;
+  --paprika-deep: #93340a;
+  --paprika-rgb: 193, 68, 14;
 
-  /* ---- Radius scale ---- */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-full: 999px;
-  --radius: var(--radius-md); /* legacy alias, kept for older idea CSS */
+  --sage: #66794a;
+  --sage-deep: #4d5c37;
+  --sage-rgb: 102, 121, 74;
 
-  /* ---- Spacing scale ---- */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
+  --mustard: #dfa23a;
+  --mustard-deep: #a9701c;
+  --mustard-rgb: 223, 162, 58;
 
-  /* ---- Type scale (fluid, clamps between mobile and desktop) ---- */
-  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8rem);
-  --text-sm: clamp(0.85rem, 0.82rem + 0.15vw, 0.9rem);
-  --text-base: clamp(0.95rem, 0.92rem + 0.2vw, 1rem);
-  --text-lg: clamp(1.05rem, 1rem + 0.3vw, 1.15rem);
-  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-2xl: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
-  --text-3xl: clamp(2rem, 1.7rem + 1.6vw, 2.75rem);
+  /* ---- Type ---- */
+  --font-display: Georgia, "Iowan Old Style", "Palatino Linotype",
+    "Book Antiqua", Palatino, "Noto Serif", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
-    Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Code",
-    Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.85rem;
+  --text-base: 0.98rem;
+  --text-lg: 1.1rem;
 
   /* ---- Motion ---- */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out, snappy+smooth */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 150ms;
   --dur-base: 250ms;
-  --dur-slow: 450ms;
 
-  /* ---- Elevation ---- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.4),
-    0 8px 32px -8px rgba(var(--accent-rgb), 0.35);
-
-  --max-width: 720px;
-  --max-width-wide: 960px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fafafa;
-    --bg-elevated: #ffffff;
-    --bg-elevated-2: #f2f3f5;
-    --border: #e5e7eb;
-    --border-hover: #d1d5db;
-    --text: #14171b;
-    --text-muted: #5b6472;
-    --text-faint: #8a94a3;
-    --accent: #059669;
-    --accent-strong: #047857;
-    --accent-rgb: 5, 150, 105;
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 8px 24px -8px rgba(15, 23, 42, 0.14);
-    --shadow-lg: 0 24px 48px -16px rgba(15, 23, 42, 0.18);
-    --shadow-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.25),
-      0 8px 32px -8px rgba(var(--accent-rgb), 0.25);
-  }
+  --max-width: 640px;
 }
 
 * { box-sizing: border-box; }
 
-html { color-scheme: dark light; }
+html { color-scheme: light; }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  background: var(--bg);
+  background: var(--paper);
   background-image:
-    radial-gradient(ellipse 60% 40% at 15% -10%, rgba(var(--accent-rgb), 0.14), transparent 60%),
-    radial-gradient(ellipse 50% 35% at 100% 0%, rgba(var(--accent-rgb), 0.08), transparent 55%);
+    radial-gradient(ellipse 60% 40% at 12% -8%, rgba(var(--mustard-rgb), 0.16), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 105% 5%, rgba(var(--paprika-rgb), 0.08), transparent 55%);
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: var(--text);
+  color: var(--ink);
   line-height: 1.55;
   min-height: 100vh;
   display: flex;
@@ -132,44 +92,42 @@ body {
   position: relative;
 }
 
-/* Faint film-grain noise overlay for texture — pure CSS, no image asset. */
+/* Warm paper grain — pure CSS/SVG, no image asset. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
   z-index: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-.wrap {
+.rs-wrap {
   max-width: var(--max-width);
   width: 100%;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-5) var(--space-7);
+  padding: var(--space, 1.5rem) 1.25rem 3.5rem;
   flex: 1;
   position: relative;
   z-index: 1;
 }
 
-.wrap-wide { max-width: var(--max-width-wide); }
-
-header.site {
+/* ---- Header / footer ---- */
+header.rs-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: var(--max-width);
   margin: 0 auto;
   width: 100%;
-  padding: var(--space-5) var(--space-5) 0;
+  padding: 1.5rem 1.25rem 0;
   position: relative;
   z-index: 1;
 }
-
-header.site a.home {
-  color: var(--text-muted);
+a.rs-home {
+  color: var(--ink-muted);
   text-decoration: none;
   font-size: var(--text-sm);
   transition: color var(--dur-fast) var(--ease-out);
@@ -177,186 +135,350 @@ header.site a.home {
   align-items: center;
   gap: 0.35em;
 }
-header.site a.home:hover { color: var(--text); }
+a.rs-home:hover { color: var(--paprika-deep); }
 
-h1 {
-  font-size: var(--text-3xl);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin: 0 0 var(--space-2);
-}
-h2 {
-  font-size: var(--text-xl);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: var(--space-6) 0 var(--space-3);
-}
-h3 {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  margin: var(--space-4) 0 var(--space-2);
-}
-
-p.tagline {
-  color: var(--text-muted);
-  font-size: var(--text-lg);
-  margin: 0 0 var(--space-6);
-}
-
-/* Gradient text utility — use sparingly, e.g. one word in a heading. */
-.text-gradient {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
-  transition: border-color var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out),
-    transform var(--dur-base) var(--ease-out);
-}
-.card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-md);
-}
-/* Opt-in: add .card--lift for a subtle hover lift on clickable/result cards */
-.card--lift:hover { transform: translateY(-3px); }
-
-button, .btn {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #04150e;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 1.2rem;
-  font-size: var(--text-base);
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--dur-fast) var(--ease-spring),
-    box-shadow var(--dur-base) var(--ease-out),
-    filter var(--dur-fast) var(--ease-out);
-}
-button:hover, .btn:hover {
-  filter: brightness(1.06);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
-}
-button:active, .btn:active { transform: translateY(0) scale(0.98); }
-button:disabled, .btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-  filter: none;
-}
-
-/* Secondary/ghost button — for a page's less-important action */
-.btn-ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: none;
-}
-.btn-ghost:hover {
-  background: var(--bg-elevated-2);
-  border-color: var(--border-hover);
-  box-shadow: none;
-  filter: none;
-}
-
-button:focus-visible, .btn:focus-visible,
-a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-input, textarea, select {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  padding: 0.6rem 0.75rem;
-  font-family: inherit;
-  font-size: var(--text-base);
-  width: 100%;
-  transition: border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
-}
-input:hover, textarea:hover, select:hover { border-color: var(--border-hover); }
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18);
-}
-
-label {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  display: block;
-  margin-bottom: 0.35rem;
-  font-weight: 500;
-}
-
-footer.site {
-  text-align: center;
-  color: var(--text-faint);
+.rs-eyebrow-tag {
   font-size: var(--text-xs);
-  padding: var(--space-6) var(--space-5) var(--space-7);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+
+footer.rs-footer {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  padding: 2rem 1.25rem 3rem;
   position: relative;
   z-index: 1;
 }
-footer.site a { color: var(--text-faint); transition: color var(--dur-fast) var(--ease-out); }
-footer.site a:hover { color: var(--text-muted); }
 
-.stack { display: flex; flex-direction: column; gap: var(--space-4); }
-.row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-.muted { color: var(--text-muted); }
-.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+/* ---- Hero / editorial headline ---- */
+.rs-hero { padding: 1.5rem 0 2rem; }
 
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: var(--space-5) 0;
-}
-
-.badge {
-  display: inline-flex;
+.rs-eyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--paprika-deep);
+  margin: 0 0 0.6rem;
+  display: flex;
   align-items: center;
-  gap: 0.35em;
-  font-size: var(--text-xs);
-  font-weight: 600;
-  padding: 0.25em 0.65em;
-  border-radius: var(--radius-full);
-  background: rgba(var(--accent-rgb), 0.14);
-  color: var(--accent);
-  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  gap: 0.5em;
+}
+.rs-eyebrow::before {
+  content: "";
+  width: 1.4em;
+  height: 2px;
+  background: var(--paprika);
+  display: inline-block;
 }
 
-/* ---- Entrance animation (CSS-only, no JS required) ----
-   Add .fade-in to any element; it plays once on page load.
-   Stagger a group by adding .fade-in to each child of a .stack/.row —
-   the nth-child delays below create a natural cascade. */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
+.rs-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 1.7rem + 2vw, 3.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 0.85rem;
+}
+.rs-title em {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--paprika);
+}
+
+.rs-tagline {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* ---- The index card ---- */
+.rs-card-tear {
+  height: 13px;
+  max-width: calc(var(--max-width) - 0px);
+  background: var(--paper-elevated);
+  clip-path: polygon(
+    0% 100%, 5% 0%, 10% 100%, 15% 0%, 20% 100%, 25% 0%, 30% 100%, 35% 0%,
+    40% 100%, 45% 0%, 50% 100%, 55% 0%, 60% 100%, 65% 0%, 70% 100%, 75% 0%,
+    80% 100%, 85% 0%, 90% 100%, 95% 0%, 100% 100%, 100% 100%, 0 100%
+  );
+  position: relative;
+  z-index: 1;
+}
+
+.rs-index-card {
+  background: var(--paper-elevated);
+  border: 1px solid var(--line-strong);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 1.75rem 1.75rem 1.75rem 2.75rem;
+  box-shadow: 0 1px 2px rgba(43, 32, 19, 0.06), 0 24px 48px -28px rgba(43, 32, 19, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+/* the classic index-card red margin rule */
+.rs-index-card::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 1.9rem;
+  width: 1px;
+  background: rgba(var(--paprika-rgb), 0.35);
+}
+
+.rs-field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+
+label {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+.rs-hint {
+  font-weight: 400;
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+textarea#recipe-input {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--paper-elevated);
+  background-image: repeating-linear-gradient(
+    var(--paper-elevated) 0,
+    var(--paper-elevated) calc(2rem - 1px),
+    var(--line) calc(2rem - 1px),
+    var(--line) 2rem
+  );
+  line-height: 2rem;
+  padding: 0.05rem 0.85rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  width: 100%;
+  resize: vertical;
+  min-height: 11rem;
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+textarea#recipe-input:hover { border-color: var(--mustard-deep); }
+textarea#recipe-input:focus {
+  outline: none;
+  border-color: var(--paprika);
+  box-shadow: 0 0 0 3px rgba(var(--paprika-rgb), 0.14);
+}
+
+/* ---- Servings steppers ---- */
+.rs-servings-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.rs-stepper-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.rs-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--paper);
+  overflow: hidden;
+}
+.rs-step-btn {
+  background: transparent;
+  border: none;
+  width: 2.15rem;
+  height: 2.15rem;
+  font-size: 1.15rem;
+  font-family: var(--font-sans);
+  color: var(--paprika-deep);
+  cursor: pointer;
+  line-height: 1;
+  transition: background var(--dur-fast) var(--ease-out);
+  flex: none;
+}
+.rs-step-btn:hover { background: rgba(var(--paprika-rgb), 0.1); }
+.rs-step-btn:active { background: rgba(var(--paprika-rgb), 0.18); }
+
+.rs-stepper input {
+  border: none;
+  background: transparent;
+  text-align: center;
+  width: 3.4rem;
+  padding: 0.3rem 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+.rs-stepper input::-webkit-outer-spin-button,
+.rs-stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.rs-stepper input:focus { outline: none; }
+.rs-stepper:focus-within {
+  border-color: var(--paprika);
+  box-shadow: 0 0 0 3px rgba(var(--paprika-rgb), 0.14);
+}
+
+.rs-arrow-divider {
+  color: var(--ink-faint);
+  font-size: 1.3rem;
+  padding-bottom: 0.6rem;
+}
+
+/* ---- Primary button ---- */
+.rs-scale-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--paprika), var(--paprika-deep));
+  color: #fff6ea;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 12px 26px -12px rgba(var(--paprika-rgb), 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-base) var(--ease-out), filter var(--dur-fast) var(--ease-out);
+}
+.rs-scale-btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
+.rs-scale-btn:active { transform: translateY(0) scale(0.98); }
+.rs-scale-btn:focus-visible { outline: 2px solid var(--paprika-deep); outline-offset: 3px; }
+
+/* ---- Perforated tear divider ---- */
+.rs-perforation {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed var(--line-strong);
+  margin: 1.85rem -1.75rem 1.5rem -2.75rem;
+}
+.rs-perforation::before,
+.rs-perforation::after {
+  content: "";
+  position: absolute;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+}
+.rs-perforation::before { left: -9px; }
+.rs-perforation::after { right: -9px; }
+
+/* ---- Result: scale factor badge (inspired by 21st.dev "Numbers" stat chips) ---- */
+.rs-factor-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  background: linear-gradient(135deg, rgba(var(--mustard-rgb), 0.18), rgba(var(--mustard-rgb), 0.05));
+  border: 1px solid rgba(var(--mustard-rgb), 0.45);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  margin-bottom: 1.1rem;
+}
+.rs-factor-eyebrow {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+.rs-factor-number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--mustard-deep);
+  font-variant-numeric: tabular-nums;
+}
+
+.rs-result-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 0.85rem;
+}
+
+/* ---- Result rows: before -> after comparison ---- */
+.rs-result-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.rs-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.95rem;
+  animation: rsRowIn var(--dur-base) var(--ease-out) both;
+}
+.rs-result-list li:nth-child(1) { animation-delay: 0ms; }
+.rs-result-list li:nth-child(2) { animation-delay: 30ms; }
+.rs-result-list li:nth-child(3) { animation-delay: 60ms; }
+.rs-result-list li:nth-child(4) { animation-delay: 90ms; }
+.rs-result-list li:nth-child(5) { animation-delay: 120ms; }
+.rs-result-list li:nth-child(n+6) { animation-delay: 150ms; }
+
+@keyframes rsRowIn {
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.fade-in {
-  animation: fadeInUp var(--dur-slow) var(--ease-out) both;
+
+.rs-row .rs-orig {
+  color: var(--ink-faint);
+  text-decoration: line-through;
+  text-decoration-color: rgba(var(--paprika-rgb), 0.45);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85em;
+  white-space: nowrap;
 }
-.stack > .fade-in:nth-child(1), .row > .fade-in:nth-child(1) { animation-delay: 0ms; }
-.stack > .fade-in:nth-child(2), .row > .fade-in:nth-child(2) { animation-delay: 60ms; }
-.stack > .fade-in:nth-child(3), .row > .fade-in:nth-child(3) { animation-delay: 120ms; }
-.stack > .fade-in:nth-child(4), .row > .fade-in:nth-child(4) { animation-delay: 180ms; }
-.stack > .fade-in:nth-child(5), .row > .fade-in:nth-child(5) { animation-delay: 240ms; }
-.stack > .fade-in:nth-child(n+6), .row > .fade-in:nth-child(n+6) { animation-delay: 300ms; }
+.rs-row .rs-row-arrow {
+  color: var(--sage-deep);
+  font-size: 0.85em;
+}
+.rs-row .rs-qty {
+  font-weight: 700;
+  color: var(--paprika-deep);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rs-row .rs-name { color: var(--ink); }
+.rs-row--plain { color: var(--ink-muted); }
+.rs-row--plain .rs-name { font-style: italic; }
+
+.rs-warning {
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  margin: 0.75rem 0 0;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -367,26 +489,8 @@ footer.site a:hover { color: var(--text-muted); }
   }
 }
 
-/* ==== idea-specific rules (preserved from pre-design-system theme.css) ==== */
-/* recipe-scaler specific */
-textarea#recipe-input { resize: vertical; min-height: 8rem; }
-.rs-result-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-.rs-result-list li {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
-}
-.rs-result-list li .rs-qty {
-  color: var(--accent-strong);
-  font-weight: 700;
-  margin-right: 0.4rem;
+@media (max-width: 480px) {
+  .rs-index-card { padding-left: 2rem; }
+  .rs-index-card::before { left: 1.15rem; }
+  .rs-perforation { margin-left: -2rem; margin-right: -1.25rem; }
 }

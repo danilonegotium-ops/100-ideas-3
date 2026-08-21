@@ -1,54 +1,66 @@
 <!doctype html>
-<html lang="en" data-accent="cyan">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Water Intake Gamified</title>
+  <title>Hydration Grove — Water Intake, Gamified</title>
   <meta name="description" content="A simple app where you grow a digital tree every time you drink a glass of water." />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
-  <canvas class="mesh-bg-canvas" data-mesh-bg="#22d3ee80,#4ade804d,#60a5fa40"></canvas>
+  <div class="fireflies" aria-hidden="true">
+    <span class="firefly"></span>
+    <span class="firefly"></span>
+    <span class="firefly"></span>
+    <span class="firefly"></span>
+    <span class="firefly"></span>
+    <span class="firefly"></span>
+  </div>
   <header class="site">
     <a class="home" href="/">&larr; more tools</a>
   </header>
   <main class="wrap">
-    <h1>Water Intake Gamified</h1>
-    <p class="tagline">A simple app where you grow a digital tree every time you drink a glass of water.</p>
-
-    <div class="gradient-border">
-      <div class="card stack">
-        <div id="treeStage" class="tree-stage" data-spotlight data-tilt aria-live="polite"></div>
-
-        <div class="stack" style="text-align:center;">
-          <div id="progressText" class="muted"></div>
-          <button id="drinkBtn" type="button" class="btn-glow">💧 I drank a glass</button>
-          <div class="row" style="justify-content:center;">
-            <button id="undoBtn" type="button" class="secondary-btn">Undo last</button>
-            <button id="resetBtn" type="button" class="secondary-btn">Reset today</button>
-          </div>
-        </div>
-
-        <div id="streakText" class="muted" style="text-align:center;"></div>
-
-        <details>
-          <summary>Change daily goal</summary>
-          <div class="row" style="margin-top:0.75rem;">
-            <div style="flex:1; min-width:140px;">
-              <label for="goalGlasses">Goal (glasses of ~250ml)</label>
-              <input id="goalGlasses" type="number" min="1" max="20" step="1" value="8" />
-            </div>
-          </div>
-          <button id="saveGoalBtn" type="button" style="margin-top:0.5rem;">Save goal</button>
-        </details>
-      </div>
+    <div class="page-head">
+      <p class="kicker">🌱 Hydration Grove</p>
+      <h1>Water Intake, Gamified</h1>
+      <p class="tagline">Every glass you drink helps your tree grow — from a bare seed to a blooming tree.</p>
     </div>
+
+    <section class="grove-card">
+      <div class="grove-ground">
+        <div id="treeStage" class="tree-stage" aria-live="polite"></div>
+      </div>
+
+      <div class="droplet-row" id="dropletRow" aria-hidden="true"></div>
+      <p id="progressText" class="progress-text"></p>
+
+      <button id="drinkBtn" type="button" class="btn-drop">
+        <span class="btn-drop__icon">💧</span>
+        <span>I drank a glass</span>
+      </button>
+
+      <div class="grove-actions">
+        <button id="undoBtn" type="button" class="btn-ghost-leaf">Undo last</button>
+        <button id="resetBtn" type="button" class="btn-ghost-leaf">Reset today</button>
+      </div>
+
+      <div id="streakText" class="streak-badge"></div>
+    </section>
+
+    <details class="goal-panel">
+      <summary>Change daily goal</summary>
+      <div class="goal-row">
+        <div>
+          <label for="goalGlasses">Goal (glasses of ~250ml)</label>
+          <input id="goalGlasses" type="number" min="1" max="20" step="1" value="8" />
+        </div>
+        <button id="saveGoalBtn" type="button" class="btn-save-goal">Save goal</button>
+      </div>
+    </details>
   </main>
   <footer class="site">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
-  <script src="tier2.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

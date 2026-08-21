@@ -1,127 +1,95 @@
 /* ============================================================
-   TIER 1 — "Refined Minimal"
-   Shared design tokens + base styles for all Wave 1/2 static tools.
+   SPEED READING TRAINER — bespoke design, not the shared tier1/tier2
+   system used elsewhere in the project.
 
-   This file is the DEFAULT for every static idea. It is copied into each
-   idea folder and the accent/radius tokens may be nudged per-idea, but the
-   scale (spacing/type/motion) should stay consistent across all 39 tools so
-   the whole "100 ideas" project reads as one family.
+   Concept: a "reading instrument" in a dim room. One recessed screen
+   (the RSVP word display) is the only thing meant to hold your eye —
+   everything else (heading, textarea, footer) recedes further while a
+   run is playing. Warm amber-on-graphite instead of a generic dark
+   theme: low blue-light, closer to a reading-lamp / darkroom / tape-
+   deck palette than a "tech product" palette, because this is a
+   concentration tool, not a dashboard.
 
-   Existing selectors (.card, .btn, .stack, .row, input/textarea/select,
-   label, header.site, footer.site) are preserved byte-for-byte in meaning —
-   only their styling is upgraded — so dropping this file into an idea
-   folder that already uses those classes never breaks markup.
-
-   Want more visual ambition (glass panels, animated gradient borders,
-   spotlight-follows-cursor, canvas mesh backgrounds, 3D tilt, bento grids)?
-   See tier2.css + tier2.js and _shared/static-template/DESIGN_SYSTEM.md.
+   Design references (see coder handoff notes for the full list):
+   - 21st.dev "Flip Clock" (satoriui) / "Circle Progress" / "Countdown
+     Number" — rhythmic, beat-synced digital-instrument displays informed
+     the HUD readouts and the per-word pulse cue.
+   - 21st.dev slider search ("Amount Slider", sliders "with ticks" /
+     "with marks", "Angle Slider") — informed the tactile WPM slider
+     with tick labels and a live floating value readout.
+   - 21st.dev "Vapour Text Effect" / "Blur Reveal" / "Motion Blur Text"
+     (typography search) — informed treating focus itself as the visual
+     subject: sharp pivot letter, dimmed periphery, blurred chrome.
+   - 21st.dev homepage marketing blocks ("Animated Gradient Background",
+     "Wave Background") — informed the slow ambient glow layer, but
+     inverted: motion is only present while idle and freezes the instant
+     a run starts, since ambient movement during RSVP reading would
+     fight the reading task instead of setting a mood for it.
    ============================================================ */
 
 :root {
   /* ---- Color: surfaces ---- */
-  --bg: #0a0b0d;
-  --bg-elevated: #131519;
-  --bg-elevated-2: #1a1d22;
-  --border: #23262c;
-  --border-hover: #343841;
+  --bg: #0a0a0d;
+  --bg-well: #050506;
+  --bg-panel: #131319;
+  --bg-panel-2: #1a1a22;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-soft: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.2);
 
-  /* ---- Color: text ---- */
-  --text: #f2f4f7;
-  --text-muted: #9aa1ab;
-  --text-faint: #6b7280;
+  /* ---- Color: text (warm paper-white, not clinical blue-white) ---- */
+  --text: #eae6dd;
+  --text-dim: #93909a;
+  --text-faint: #58565f;
 
-  /* ---- Color: accent (override per-idea if it helps differentiate) ---- */
-  --accent: #34d399;
-  --accent-strong: #10b981;
-  --accent-rgb: 52, 211, 153; /* keep in sync with --accent, used for glows */
-  --danger: #f87171;
-  --danger-rgb: 248, 113, 113;
+  /* ---- Color: accent — warm amber, one accent only, used deliberately ---- */
+  --accent: #f2a35c;
+  --accent-strong: #ffc98c;
+  --accent-deep: #b06f2e;
+  --accent-rgb: 242, 163, 92;
 
-  /* ---- Radius scale ---- */
+  /* ---- Type ---- */
+  --font-display: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    Menlo, Consolas, monospace; /* fixed-width: keeps the ORP pivot column
+      mathematically stable as word length changes — functional, not just
+      a look. Also doubles as the "instrument" voice for the HUD digits. */
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  /* ---- Radius / spacing ---- */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-lg: 26px;
   --radius-full: 999px;
-  --radius: var(--radius-md); /* legacy alias, kept for older idea CSS */
-
-  /* ---- Spacing scale ---- */
-  --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
   --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-
-  /* ---- Type scale (fluid, clamps between mobile and desktop) ---- */
-  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8rem);
-  --text-sm: clamp(0.85rem, 0.82rem + 0.15vw, 0.9rem);
-  --text-base: clamp(0.95rem, 0.92rem + 0.2vw, 1rem);
-  --text-lg: clamp(1.05rem, 1rem + 0.3vw, 1.15rem);
-  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-2xl: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
-  --text-3xl: clamp(2rem, 1.7rem + 1.6vw, 2.75rem);
-
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
-    Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Code",
-    Menlo, Consolas, monospace;
+  --space-6: 2.25rem;
+  --space-7: 3.5rem;
 
   /* ---- Motion ---- */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out, snappy+smooth */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 150ms;
-  --dur-base: 250ms;
-  --dur-slow: 450ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur-base: 260ms;
+  --dur-slow: 600ms;
 
-  /* ---- Elevation ---- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.4),
-    0 8px 32px -8px rgba(var(--accent-rgb), 0.35);
-
-  --max-width: 720px;
-  --max-width-wide: 960px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fafafa;
-    --bg-elevated: #ffffff;
-    --bg-elevated-2: #f2f3f5;
-    --border: #e5e7eb;
-    --border-hover: #d1d5db;
-    --text: #14171b;
-    --text-muted: #5b6472;
-    --text-faint: #8a94a3;
-    --accent: #059669;
-    --accent-strong: #047857;
-    --accent-rgb: 5, 150, 105;
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 8px 24px -8px rgba(15, 23, 42, 0.14);
-    --shadow-lg: 0 24px 48px -16px rgba(15, 23, 42, 0.18);
-    --shadow-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.25),
-      0 8px 32px -8px rgba(var(--accent-rgb), 0.25);
-  }
+  --max-width: 640px;
 }
 
 * { box-sizing: border-box; }
+html { color-scheme: dark; }
 
-html { color-scheme: dark light; }
+/* Intentionally dark-only: this is a concentration tool, and a dim,
+   low-blue-light "reading lamp" register is the point of the identity —
+   not a default we forgot to make light-mode-aware. */
 
 body {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
+  font-family: var(--font-ui);
+  font-size: 1rem;
   background: var(--bg);
-  background-image:
-    radial-gradient(ellipse 60% 40% at 15% -10%, rgba(var(--accent-rgb), 0.14), transparent 60%),
-    radial-gradient(ellipse 50% 35% at 100% 0%, rgba(var(--accent-rgb), 0.08), transparent 55%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   color: var(--text);
   line-height: 1.55;
   min-height: 100vh;
@@ -130,18 +98,43 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   position: relative;
+  overflow-x: hidden;
 }
 
-/* Faint film-grain noise overlay for texture — pure CSS, no image asset. */
-body::before {
-  content: "";
+/* ---- Ambient glow: two slow-drifting amber blobs behind everything.
+   Frozen (animation-play-state: paused) the instant a run starts, so the
+   background never competes with the flashing word for attention. ---- */
+.ambient {
   position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
+  inset: -10vh -10vw;
   z-index: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  pointer-events: none;
+  background-image:
+    radial-gradient(38rem 30rem at 18% 12%, rgba(var(--accent-rgb), 0.16), transparent 65%),
+    radial-gradient(32rem 26rem at 86% 82%, rgba(var(--accent-rgb), 0.09), transparent 60%);
+  filter: blur(10px);
+  animation: driftGlow 46s var(--ease-in-out, ease-in-out) infinite alternate;
+}
+@keyframes driftGlow {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(2.5%, -3%) scale(1.06); }
+}
+body.is-playing .ambient { animation-play-state: paused; opacity: 0.55; transition: opacity var(--dur-slow) var(--ease-out); }
+
+/* ---- Focus mode: everything that isn't the reader recedes while playing.
+   :focus-within / :hover keeps a piece of dimmed chrome usable (you can
+   still click into the textarea mid-run — restart() will pause things). ---- */
+.chrome-dim {
+  transition: opacity var(--dur-slow) var(--ease-out), filter var(--dur-slow) var(--ease-out);
+}
+body.is-playing .chrome-dim {
+  opacity: 0.32;
+  filter: blur(2.5px) saturate(0.7);
+}
+body.is-playing .chrome-dim:hover,
+body.is-playing .chrome-dim:focus-within {
+  opacity: 1;
+  filter: none;
 }
 
 .wrap {
@@ -154,12 +147,9 @@ body::before {
   z-index: 1;
 }
 
-.wrap-wide { max-width: var(--max-width-wide); }
-
 header.site {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   max-width: var(--max-width);
   margin: 0 auto;
   width: 100%;
@@ -167,196 +157,356 @@ header.site {
   position: relative;
   z-index: 1;
 }
-
 header.site a.home {
-  color: var(--text-muted);
+  color: var(--text-dim);
   text-decoration: none;
-  font-size: var(--text-sm);
-  transition: color var(--dur-fast) var(--ease-out);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
+  font-size: 0.85rem;
 }
 header.site a.home:hover { color: var(--text); }
 
+.intro { margin-bottom: var(--space-5); }
 h1 {
-  font-size: var(--text-3xl);
+  font-size: clamp(1.6rem, 1.35rem + 1.1vw, 2.1rem);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   line-height: 1.1;
   margin: 0 0 var(--space-2);
+  color: var(--text);
 }
-h2 {
-  font-size: var(--text-xl);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: var(--space-6) 0 var(--space-3);
-}
-h3 {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  margin: var(--space-4) 0 var(--space-2);
-}
-
 p.tagline {
-  color: var(--text-muted);
-  font-size: var(--text-lg);
-  margin: 0 0 var(--space-6);
+  color: var(--text-dim);
+  font-size: 0.98rem;
+  margin: 0;
+  max-width: 46ch;
 }
 
-/* Gradient text utility — use sparingly, e.g. one word in a heading. */
-.text-gradient {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* ---- Text input panel: quiet, recessive by default ---- */
+.text-input {
+  margin-bottom: var(--space-5);
+}
+.text-input label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+}
+textarea {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  padding: var(--space-4);
+  font-family: inherit;
+  font-size: 0.95rem;
+  width: 100%;
+  resize: vertical;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+textarea:hover { border-color: var(--border-strong); }
+textarea:focus {
+  outline: none;
+  border-color: rgba(var(--accent-rgb), 0.5);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12);
 }
 
-.card {
-  background: var(--bg-elevated);
+/* ============================================================
+   THE STAGE — the whole point of the app.
+   ============================================================ */
+.stage {
+  position: relative;
+  z-index: 1;
+  margin-bottom: var(--space-6);
+}
+
+.reader-well {
+  position: relative;
+  background: var(--bg-well);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
-  transition: border-color var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out),
-    transform var(--dur-base) var(--ease-out);
+  padding: var(--space-7) var(--space-5) var(--space-6);
+  min-height: 11rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 20px 60px -30px rgba(0, 0, 0, 0.8);
+  transition: box-shadow var(--dur-slow) var(--ease-out);
+  overflow: hidden;
 }
-.card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-md);
+/* Faint amber "screen glow" ring while a run is active */
+body.is-playing .reader-well {
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(var(--accent-rgb), 0.22),
+    0 0 70px -18px rgba(var(--accent-rgb), 0.35);
 }
-/* Opt-in: add .card--lift for a subtle hover lift on clickable/result cards */
-.card--lift:hover { transform: translateY(-3px); }
 
-button, .btn {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #04150e;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 1.2rem;
-  font-size: var(--text-base);
+/* HUD readouts — tape-deck counter, tucked into the corners of the screen */
+.reader-hud {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: rgba(var(--accent-rgb), 0.55);
+  pointer-events: none;
+}
+
+/* Fixed eye-anchor tick — always dead-center over the well, regardless of
+   word length, because the pivot column beneath it is centered the same
+   way (flex 1 / auto / 1 on .pre/.pivot/.post). Marks where your eye
+   should rest without moving. */
+.pivot-marker {
+  position: absolute;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 0.6rem;
+  background: linear-gradient(to bottom, rgba(var(--accent-rgb), 0.55), transparent);
+}
+.pivot-marker::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb), 0.65);
+}
+
+.reader-word {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 2rem + 4vw, 4.4rem);
   font-weight: 600;
-  font-family: inherit;
+  width: 100%;
+  letter-spacing: -0.01em;
+}
+.reader-word .pre { flex: 1 1 0; text-align: right; white-space: pre; color: var(--text); }
+.reader-word .post { flex: 1 1 0; text-align: left; white-space: pre; color: var(--text); }
+.reader-word .pivot {
+  flex: 0 0 auto;
+  color: var(--accent);
+  text-shadow: 0 0 22px rgba(var(--accent-rgb), 0.55);
+}
+
+/* When the word reads "Ready" (no pivot spans yet), keep it centered and
+   dim rather than amber — that state is a prompt, not a reading beat. */
+.reader-word:only-child,
+#srt-word:not(:has(.pivot)) {
+  justify-content: center;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+
+/* Per-word rhythm cue: a slim bar beneath the word that gives a quick
+   pulse on every tick, restarted from JS via a classList toggle. Kept
+   deliberately subtle and separate from the word glyphs themselves —
+   flipping/animating the word text at 100-600ms intervals would hurt
+   legibility, which is the one thing this app cannot compromise on. */
+.pulse-bar {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.25rem;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: rgba(var(--accent-rgb), 0.25);
+}
+.pulse-bar.tick {
+  animation: pulseTick 420ms var(--ease-out);
+}
+@keyframes pulseTick {
+  0% { background: rgba(var(--accent-rgb), 0.9); width: 3.75rem; box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.6); }
+  100% { background: rgba(var(--accent-rgb), 0.25); width: 2.25rem; box-shadow: none; }
+}
+
+/* ---- Progress: a recessed groove + amber fill, like a tape counter ---- */
+.progress-groove {
+  margin-top: var(--space-3);
+  background: var(--bg-well);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-full);
+  height: 5px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  height: 100%;
+  width: 0%;
+  transition: width 0.15s linear;
+}
+
+/* ============================================================
+   DECK — speed control + transport, below the stage
+   ============================================================ */
+.deck {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  position: relative;
+  z-index: 1;
+}
+
+.speed-control {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+.speed-control-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+.speed-control label {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+.speed-value {
+  font-family: var(--font-display);
+  color: var(--accent-strong);
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+.speed-value .unit {
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  margin-left: 0.3em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Tactile range slider: thick groove, glowing amber thumb */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1.5rem;
+  background: transparent;
+  margin: 0;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent) var(--_fill, 22%), var(--border) var(--_fill, 22%));
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--accent-strong), var(--accent) 60%, var(--accent-deep));
+  border: 2px solid #0a0a0d;
+  box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.4), 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.12); }
+input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.22); }
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--border);
+}
+input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--accent-strong), var(--accent) 60%, var(--accent-deep));
+  border: 2px solid #0a0a0d;
+  box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.4);
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.speed-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  padding: 0 1px;
+  margin-top: -0.15rem;
+}
+
+.transport {
+  display: flex;
+  gap: var(--space-3);
+}
+button {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  border: none;
   transition: transform var(--dur-fast) var(--ease-spring),
     box-shadow var(--dur-base) var(--ease-out),
-    filter var(--dur-fast) var(--ease-out);
+    filter var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
 }
-button:hover, .btn:hover {
-  filter: brightness(1.06);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-deep));
+  color: #1a0f04;
+  box-shadow: 0 8px 24px -10px rgba(var(--accent-rgb), 0.55);
+  flex: 1 1 auto;
 }
-button:active, .btn:active { transform: translateY(0) scale(0.98); }
-button:disabled, .btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-  filter: none;
-}
+.btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0) scale(0.98); }
 
-/* Secondary/ghost button — for a page's less-important action */
 .btn-ghost {
   background: transparent;
-  color: var(--text);
+  color: var(--text-dim);
   border: 1px solid var(--border);
-  box-shadow: none;
 }
-.btn-ghost:hover {
-  background: var(--bg-elevated-2);
-  border-color: var(--border-hover);
-  box-shadow: none;
-  filter: none;
-}
+.btn-ghost:hover { color: var(--text); border-color: var(--border-strong); }
+.btn-ghost:active { transform: scale(0.98); }
 
-button:focus-visible, .btn:focus-visible,
-a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-input, textarea, select {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  padding: 0.6rem 0.75rem;
-  font-family: inherit;
-  font-size: var(--text-base);
-  width: 100%;
-  transition: border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
-}
-input:hover, textarea:hover, select:hover { border-color: var(--border-hover); }
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18);
-}
-
-label {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  display: block;
-  margin-bottom: 0.35rem;
-  font-weight: 500;
-}
+.muted { color: var(--text-faint); font-size: 0.85rem; }
 
 footer.site {
   text-align: center;
   color: var(--text-faint);
-  font-size: var(--text-xs);
+  font-size: 0.75rem;
   padding: var(--space-6) var(--space-5) var(--space-7);
   position: relative;
   z-index: 1;
 }
-footer.site a { color: var(--text-faint); transition: color var(--dur-fast) var(--ease-out); }
-footer.site a:hover { color: var(--text-muted); }
-
-.stack { display: flex; flex-direction: column; gap: var(--space-4); }
-.row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-.muted { color: var(--text-muted); }
-.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: var(--space-5) 0;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  font-size: var(--text-xs);
-  font-weight: 600;
-  padding: 0.25em 0.65em;
-  border-radius: var(--radius-full);
-  background: rgba(var(--accent-rgb), 0.14);
-  color: var(--accent);
-  border: 1px solid rgba(var(--accent-rgb), 0.25);
-}
-
-/* ---- Entrance animation (CSS-only, no JS required) ----
-   Add .fade-in to any element; it plays once on page load.
-   Stagger a group by adding .fade-in to each child of a .stack/.row —
-   the nth-child delays below create a natural cascade. */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.fade-in {
-  animation: fadeInUp var(--dur-slow) var(--ease-out) both;
-}
-.stack > .fade-in:nth-child(1), .row > .fade-in:nth-child(1) { animation-delay: 0ms; }
-.stack > .fade-in:nth-child(2), .row > .fade-in:nth-child(2) { animation-delay: 60ms; }
-.stack > .fade-in:nth-child(3), .row > .fade-in:nth-child(3) { animation-delay: 120ms; }
-.stack > .fade-in:nth-child(4), .row > .fade-in:nth-child(4) { animation-delay: 180ms; }
-.stack > .fade-in:nth-child(5), .row > .fade-in:nth-child(5) { animation-delay: 240ms; }
-.stack > .fade-in:nth-child(n+6), .row > .fade-in:nth-child(n+6) { animation-delay: 300ms; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -367,37 +517,9 @@ footer.site a:hover { color: var(--text-muted); }
   }
 }
 
-/* Speed Reading Trainer — idea-specific */
-.reader {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 2.5rem 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 6.5rem;
-}
-.reader-word {
-  display: flex;
-  align-items: baseline;
-  font-size: 2.1rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  width: 100%;
-}
-.reader-word .pre { flex: 1 1 0; text-align: right; white-space: pre; }
-.reader-word .post { flex: 1 1 0; text-align: left; white-space: pre; }
-.reader-word .pivot { flex: 0 0 auto; color: var(--accent); }
-.progress-track {
-  background: var(--border);
-  border-radius: 999px;
-  height: 6px;
-  overflow: hidden;
-}
-.progress-fill {
-  background: var(--accent);
-  height: 100%;
-  width: 0%;
-  transition: width 0.15s linear;
+@supports not (selector(:has(*))) {
+  /* Fallback for the "Ready" prompt state on browsers without :has() —
+     app.js also toggles this class directly, so this rule is redundant
+     insurance rather than the only mechanism. */
+  .reader-word.is-empty { justify-content: center; color: var(--text-faint); font-weight: 500; }
 }

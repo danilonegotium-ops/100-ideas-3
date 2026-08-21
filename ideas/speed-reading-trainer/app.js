@@ -88,6 +88,10 @@ function initApp() {
   const statusEl = document.getElementById("srt-status");
   const etaEl = document.getElementById("srt-eta");
   const emptyMsg = document.getElementById("srt-empty-msg");
+  // Presentational-only additions for the bespoke "reading instrument"
+  // design — none of these touch the pure timing/tokenizing logic above.
+  const wpmValueEl = document.getElementById("srt-wpm-value");
+  const pulseEl = document.getElementById("srt-pulse");
 
   textEl.value = typeof SAMPLE_TEXT !== "undefined" ? SAMPLE_TEXT : "";
 
@@ -99,13 +103,33 @@ function initApp() {
   function renderWord(word) {
     if (!word) {
       wordEl.textContent = "Ready";
+      wordEl.classList.add("is-empty");
       return;
     }
+    wordEl.classList.remove("is-empty");
     const { pre, pivot, post } = splitAtPivot(word);
     wordEl.innerHTML =
       '<span class="pre">' + escapeHtml(pre) + "</span>" +
       '<span class="pivot">' + escapeHtml(pivot) + "</span>" +
       '<span class="post">' + escapeHtml(post) + "</span>";
+  }
+
+  /** Update the live WPM readout + the slider's own amber fill amount. */
+  function updateWpmReadout() {
+    if (wpmValueEl) wpmValueEl.textContent = wpmEl.value;
+    const min = Number(wpmEl.min) || 0;
+    const max = Number(wpmEl.max) || 100;
+    const pct = ((Number(wpmEl.value) - min) / (max - min)) * 100;
+    wpmEl.style.setProperty("--_fill", pct + "%");
+  }
+
+  /** Restart the per-word rhythm-cue animation (reflow trick so repeat
+   *  ticks at the same word interval still replay from the start). */
+  function pulseTick() {
+    if (!pulseEl) return;
+    pulseEl.classList.remove("tick");
+    void pulseEl.offsetWidth;
+    pulseEl.classList.add("tick");
   }
 
   function escapeHtml(str) {
@@ -130,6 +154,7 @@ function initApp() {
     }
     const word = words[index];
     renderWord(word);
+    pulseTick();
     index += 1;
     updateStatus();
     if (playing) {
@@ -147,12 +172,14 @@ function initApp() {
     if (index >= words.length) index = 0; // finished run -> loop from start
     playing = true;
     playBtn.textContent = "Pause";
+    document.body.classList.add("is-playing");
     stepWord();
   }
 
   function pause() {
     playing = false;
     playBtn.textContent = "Play";
+    document.body.classList.remove("is-playing");
     if (timerId) {
       clearTimeout(timerId);
       timerId = null;
@@ -180,6 +207,9 @@ function initApp() {
   textEl.addEventListener("input", () => {
     restart();
   });
+
+  wpmEl.addEventListener("input", updateWpmReadout);
+  updateWpmReadout();
 
   restart();
 }

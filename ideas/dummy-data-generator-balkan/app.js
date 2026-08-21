@@ -97,6 +97,33 @@ if (typeof module !== "undefined" && module.exports) {
   };
 }
 
+/** Escapes &, <, > so generated text is safe to drop into innerHTML. */
+function escapeHtml(str) {
+  return String(str).replace(/[&<>]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[ch]));
+}
+
+/**
+ * Minimal JSON syntax highlighter (regex-based, no dependency) — wraps
+ * keys/strings/numbers/booleans/null in classed spans for the code-block view.
+ */
+function highlightJSON(jsonString) {
+  const escaped = escapeHtml(jsonString);
+  return escaped.replace(
+    /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(?:true|false)\b|\bnull\b|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
+    (match) => {
+      let cls = "jt-number";
+      if (/^"/.test(match)) {
+        cls = /:$/.test(match) ? "jt-key" : "jt-string";
+      } else if (/true|false/.test(match)) {
+        cls = "jt-boolean";
+      } else if (/null/.test(match)) {
+        cls = "jt-null";
+      }
+      return '<span class="' + cls + '">' + match + "</span>";
+    }
+  );
+}
+
 (function initApp() {
   if (typeof document === "undefined") return;
 
@@ -108,8 +135,28 @@ if (typeof module !== "undefined" && module.exports) {
   const tableBody = document.querySelector("#result-table tbody");
   const tableWrap = document.getElementById("table-wrap");
   const summary = document.getElementById("summary");
+  const jsonOutput = document.getElementById("json-output");
+  const csvOutput = document.getElementById("csv-output");
+  const requestLine = document.getElementById("request-line");
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  const views = {
+    table: document.getElementById("view-table"),
+    json: document.getElementById("view-json"),
+    csv: document.getElementById("view-csv")
+  };
 
   let currentProfiles = [];
+
+  function setActiveTab(name) {
+    tabs.forEach((tab) => {
+      const active = tab.dataset.view === name;
+      tab.classList.toggle("active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    Object.keys(views).forEach((key) => {
+      views[key].hidden = key !== name;
+    });
+  }
 
   function render(profiles) {
     currentProfiles = profiles;
@@ -127,14 +174,37 @@ if (typeof module !== "undefined" && module.exports) {
     summary.textContent = profiles.length + " profile" + (profiles.length === 1 ? "" : "s") + " generated";
     copyJsonBtn.disabled = profiles.length === 0;
     copyCsvBtn.disabled = profiles.length === 0;
+    jsonOutput.innerHTML = highlightJSON(profilesToJSON(profiles));
+    csvOutput.textContent = profilesToCSV(profiles);
+  }
+
+  function updateRequestLine(count, ms) {
+    requestLine.innerHTML =
+      '<span class="req-method">GET</span> ' +
+      '<span class="req-path">/profiles?locale=rs-Latn&amp;count=' + count + "</span> " +
+      '<span class="req-arrow">&rarr;</span> ' +
+      '<span class="req-status">200 OK</span> ' +
+      '<span class="req-time">' + ms.toFixed(1) + "ms</span>";
+  }
+
+  function now() {
+    return typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
   }
 
   function doGenerate() {
     const requested = parseInt(countInput.value, 10);
     const n = Math.max(1, Math.min(100, isNaN(requested) ? 10 : requested));
     countInput.value = n;
-    render(generateProfiles(n, Math.random, seed));
+    const t0 = now();
+    const profiles = generateProfiles(n, Math.random, seed);
+    const elapsed = now() - t0;
+    render(profiles);
+    updateRequestLine(profiles.length, elapsed);
   }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => setActiveTab(tab.dataset.view));
+  });
 
   function copy(text, btn) {
     const done = () => {

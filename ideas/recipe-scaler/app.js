@@ -122,15 +122,37 @@ if (typeof document !== "undefined") {
     resultList.innerHTML = "";
     lines.forEach((line) => {
       const li = document.createElement("li");
+      li.className = "rs-row";
       if (line.scaledQty !== null) {
+        const unitPart = line.unit ? `${line.unit} ` : "";
+
+        const origSpan = document.createElement("span");
+        origSpan.className = "rs-orig";
+        origSpan.textContent = `${formatQty(line.qty)} ${unitPart}`.trim();
+
+        const arrowSpan = document.createElement("span");
+        arrowSpan.className = "rs-row-arrow";
+        arrowSpan.setAttribute("aria-hidden", "true");
+        arrowSpan.textContent = "→";
+
         const qtySpan = document.createElement("span");
         qtySpan.className = "rs-qty";
-        const unitPart = line.unit ? `${line.unit} ` : "";
         qtySpan.textContent = `${formatQty(line.scaledQty)} ${unitPart}`.trim();
+
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "rs-name";
+        nameSpan.textContent = line.name;
+
+        li.appendChild(origSpan);
+        li.appendChild(arrowSpan);
         li.appendChild(qtySpan);
-        li.appendChild(document.createTextNode(line.name));
+        li.appendChild(nameSpan);
       } else {
-        li.textContent = line.raw;
+        li.classList.add("rs-row--plain");
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "rs-name";
+        nameSpan.textContent = line.raw;
+        li.appendChild(nameSpan);
       }
       resultList.appendChild(li);
     });
@@ -143,6 +165,19 @@ if (typeof document !== "undefined") {
   }
 
   scaleBtn.addEventListener("click", runScale);
+
+  // Servings steppers — tactile +/- controls; re-run the scale live if a
+  // result is already showing so nudging servings feels instant.
+  document.querySelectorAll(".rs-step-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetInput = document.getElementById(btn.getAttribute("data-target"));
+      const dir = Number(btn.getAttribute("data-dir"));
+      const current = parseFloat(targetInput.value) || 0;
+      const next = Math.max(1, current + dir);
+      targetInput.value = next;
+      if (!resultWrap.hidden) runScale();
+    });
+  });
 }
 
 if (typeof module !== "undefined" && module.exports) {

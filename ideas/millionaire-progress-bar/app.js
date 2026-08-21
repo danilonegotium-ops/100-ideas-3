@@ -34,19 +34,76 @@ function formatNumber(n) {
     : n.toLocaleString("en-US", { maximumFractionDigits: 2 });
 }
 
+// ---- Ring geometry + wealth-barometer color ramp (browser-only, presentation
+// concerns — deliberately kept separate from the pure math functions above so
+// computeProgress/milestoneMessage/formatNumber stay trivially unit-testable). ----
+const RING_RADIUS = 96;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+// Ring goes steel (just starting) -> emerald (making progress) -> gold
+// (closing in), so the visual literally warms up as net worth grows.
+const RING_STEEL = [91, 107, 122]; // #5b6b7a
+const RING_EMERALD = [31, 138, 95]; // #1f8a5f
+const RING_GOLD = [212, 175, 55]; // #d4af37
+const RING_GOLD_BRIGHT = [240, 199, 94]; // #f0c75e — goal-reached glow
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function mixRgb(c1, c2, t) {
+  return [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)];
+}
+
+function ringColorFor(clampedPercent) {
+  if (clampedPercent >= 100) return RING_GOLD_BRIGHT;
+  if (clampedPercent <= 50) return mixRgb(RING_STEEL, RING_EMERALD, clampedPercent / 50);
+  return mixRgb(RING_EMERALD, RING_GOLD, (clampedPercent - 50) / 50);
+}
+
 function render(savingsInput) {
   const progress = computeProgress(savingsInput);
-  const fillEl = document.getElementById("bar-fill");
-  const percentEl = document.getElementById("percent-label");
+  const ringArc = document.getElementById("ring-arc");
+  const heroAmountEl = document.getElementById("hero-amount");
+  const heroCaptionEl = document.getElementById("hero-caption");
   const remainingEl = document.getElementById("remaining-label");
   const messageEl = document.getElementById("milestone-message");
+  const medallionWrap = document.getElementById("medallion-wrap");
+  const dialPills = document.querySelectorAll(".dial-pill");
 
-  fillEl.style.width = `${progress.clampedPercent}%`;
-  percentEl.textContent = `${progress.rawPercent.toFixed(progress.rawPercent < 1 ? 2 : 1)}%`;
+  const offset = RING_CIRCUMFERENCE * (1 - progress.clampedPercent / 100);
+  ringArc.style.strokeDasharray = `${RING_CIRCUMFERENCE}`;
+  ringArc.style.strokeDashoffset = `${offset}`;
+
+  const [r, g, b] = ringColorFor(progress.clampedPercent).map(Math.round);
+  const glowOpacity = 0.12 + (progress.clampedPercent / 100) * 0.5;
+  const glowBlur = 10 + (progress.clampedPercent / 100) * 26;
+  ringArc.style.stroke = `rgb(${r}, ${g}, ${b})`;
+  ringArc.style.filter = `drop-shadow(0 0 ${glowBlur}px rgba(${r}, ${g}, ${b}, ${glowOpacity}))`;
+
+  heroAmountEl.textContent = formatNumber(progress.savings);
+  heroCaptionEl.textContent = progress.reached
+    ? "goal reached"
+    : `${progress.rawPercent.toFixed(progress.rawPercent < 1 ? 2 : 1)}% of 1,000,000`;
   remainingEl.textContent = progress.reached
     ? `+${formatNumber(progress.savings - GOAL)} over the goal`
     : `${formatNumber(progress.remaining)} to go`;
   messageEl.textContent = milestoneMessage(progress);
+
+  if (medallionWrap) medallionWrap.classList.toggle("is-reached", progress.reached);
+
+  dialPills.forEach((pill) => {
+    const threshold = Number(pill.dataset.threshold);
+    const isReached = progress.clampedPercent >= threshold;
+    const wasReached = pill.classList.contains("reached");
+    pill.classList.toggle("reached", isReached);
+    if (isReached && !wasReached) {
+      pill.classList.remove("pop");
+      // Force reflow so the animation restarts if it's re-triggered quickly.
+      void pill.offsetWidth;
+      pill.classList.add("pop");
+    }
+  });
 
   return progress;
 }

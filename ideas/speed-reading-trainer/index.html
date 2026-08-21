@@ -1,60 +1,73 @@
 <!doctype html>
-<html lang="en" data-accent="lime">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Speed Reading Trainer</title>
   <meta name="description" content="Paste any text and flash it back at you one word at a time (RSVP-style) so you can train your reading speed at a target WPM." />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
-  <header class="site">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="site chrome-dim">
     <a class="home" href="/">&larr; more tools</a>
   </header>
+
   <main class="wrap">
-    <h1>Speed Reading Trainer</h1>
-    <p class="tagline">Paste any text, pick a target words-per-minute, and train your eyes with a rapid serial visual presentation (RSVP) reader.</p>
+    <div class="intro chrome-dim">
+      <h1>Speed Reading Trainer</h1>
+      <p class="tagline">Paste any text, pick a target words-per-minute, and train your eyes with a rapid serial visual presentation (RSVP) reader.</p>
+    </div>
 
-    <div class="card">
-      <div class="stack">
-        <div>
-          <label for="srt-text">Text to read</label>
-          <textarea id="srt-text" rows="7"></textarea>
+    <div class="text-input chrome-dim">
+      <label for="srt-text">Text to read</label>
+      <textarea id="srt-text" rows="6"></textarea>
+    </div>
+
+    <section class="stage" aria-label="RSVP reading display">
+      <div class="reader-well" id="srt-reader">
+        <div class="reader-hud">
+          <span class="hud-readout" id="srt-status">0 / 0 words</span>
+          <span class="hud-readout" id="srt-eta">--:--</span>
         </div>
+        <div class="pivot-marker" aria-hidden="true"></div>
+        <div class="reader-word" id="srt-word">Ready</div>
+        <div class="pulse-bar" id="srt-pulse" aria-hidden="true"></div>
+      </div>
+      <div class="progress-groove">
+        <div class="progress-fill" id="srt-progress-fill"></div>
+      </div>
+    </section>
 
-        <div class="row">
-          <div style="flex: 1; min-width: 160px;">
-            <label for="srt-wpm">Target speed (words per minute)</label>
-            <input type="number" id="srt-wpm" min="100" max="1000" step="10" value="300" />
+    <div class="deck">
+      <div class="speed-control">
+        <div class="speed-control-head">
+          <label for="srt-wpm">Reading speed</label>
+          <div class="speed-value">
+            <output id="srt-wpm-value" for="srt-wpm">300</output><span class="unit">wpm</span>
           </div>
         </div>
-
-        <div class="reader glass" id="srt-reader" data-reveal>
-          <div class="reader-word" id="srt-word">Ready</div>
+        <input type="range" id="srt-wpm" min="100" max="1000" step="10" value="300" />
+        <div class="speed-ticks" aria-hidden="true">
+          <span>100</span><span>300</span><span>500</span><span>700</span><span>900</span>
         </div>
-
-        <div class="progress-track">
-          <div class="progress-fill" id="srt-progress-fill"></div>
-        </div>
-        <div class="row" style="justify-content: space-between;">
-          <span class="muted mono" id="srt-status">0 / 0 words</span>
-          <span class="muted mono" id="srt-eta">--:--</span>
-        </div>
-
-        <div class="row">
-          <button id="srt-play" class="btn-glow">Play</button>
-          <button id="srt-restart" type="button">Restart</button>
-        </div>
-        <p class="muted" id="srt-empty-msg" hidden>Paste some text above to start training.</p>
       </div>
+
+      <div class="transport">
+        <button id="srt-play" class="btn-primary">Play</button>
+        <button id="srt-restart" type="button" class="btn-ghost">Restart</button>
+      </div>
+
+      <p class="muted" id="srt-empty-msg" hidden>Paste some text above to start training.</p>
     </div>
   </main>
-  <footer class="site">
+
+  <footer class="site chrome-dim">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
+
   <script src="data.js"></script>
-  <script src="tier2.js" defer></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -12,24 +12,41 @@
     <a class="home" href="/">&larr; more tools</a>
   </header>
   <main class="wrap">
-    <h1>Board Game Night Organizer</h1>
-    <p class="tagline">Helps groups decide which game to play based on player count and how much time they have.</p>
-
-    <div class="card stack fade-in">
-      <div class="row">
-        <div style="flex:1; min-width:140px;">
-          <label for="playerCount">How many players?</label>
-          <input id="playerCount" type="number" min="1" max="20" value="4" />
-        </div>
-        <div style="flex:1; min-width:140px;">
-          <label for="minutesAvailable">Minutes available</label>
-          <input id="minutesAvailable" type="number" min="5" max="600" step="5" value="45" />
-        </div>
-      </div>
-      <button id="findBtn" type="button">Find games</button>
+    <div class="marquee">
+      <h1 class="title"><span class="die">&#127922;</span> Board Game Night</h1>
+      <p class="tagline">Tell us how many are playing and how much time you've got — we'll deal you a pick from the shelf.</p>
     </div>
 
-    <div id="results" class="stack" style="margin-top:1.5rem;"></div>
+    <div class="table">
+      <section class="setup-panel">
+        <h2>Set the table</h2>
+
+        <div class="stepper-field">
+          <label for="playerCount">Players</label>
+          <div class="stepper">
+            <button type="button" class="stepper-btn" data-target="playerCount" data-delta="-1" aria-label="Fewer players">&minus;</button>
+            <input id="playerCount" type="number" min="1" max="20" value="4" inputmode="numeric" />
+            <button type="button" class="stepper-btn" data-target="playerCount" data-delta="1" aria-label="More players">&plus;</button>
+          </div>
+        </div>
+
+        <div class="stepper-field">
+          <label for="minutesAvailable">Minutes available</label>
+          <div class="stepper">
+            <button type="button" class="stepper-btn" data-target="minutesAvailable" data-delta="-5" aria-label="Less time">&minus;</button>
+            <input id="minutesAvailable" type="number" min="5" max="600" step="5" value="45" inputmode="numeric" />
+            <button type="button" class="stepper-btn" data-target="minutesAvailable" data-delta="5" aria-label="More time">&plus;</button>
+          </div>
+        </div>
+
+        <button id="findBtn" class="deal-btn" type="button">&#127183; Deal my games</button>
+        <p class="setup-hint">Press Enter in a field to redeal too.</p>
+      </section>
+
+      <section class="deck-panel">
+        <div id="results"></div>
+      </section>
+    </div>
   </main>
   <footer class="site">
     <span>Built solo. No tracking, no signup required.</span>

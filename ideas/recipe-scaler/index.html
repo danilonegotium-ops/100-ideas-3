@@ -8,40 +8,60 @@
   <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
-  <header class="site">
-    <a class="home" href="/">&larr; more tools</a>
+  <header class="rs-header">
+    <a class="rs-home" href="/">&larr; more tools</a>
+    <span class="rs-eyebrow-tag">Kitchen Math</span>
   </header>
-  <main class="wrap">
-    <h1>Recipe Scaler</h1>
-    <p class="tagline">Paste a recipe and automatically recalculate every ingredient for a different number of servings.</p>
+  <main class="rs-wrap">
+    <section class="rs-hero">
+      <p class="rs-eyebrow">Recipe Scaler</p>
+      <h1 class="rs-title">Scale any recipe, <em>perfectly</em></h1>
+      <p class="rs-tagline">Paste your ingredients, set the servings you actually need, and every quantity recalculates instantly &mdash; no mental math, no ruined dinner.</p>
+    </section>
 
-    <div class="card stack fade-in">
-      <div class="stack">
-        <label for="recipe-input">Ingredients (one per line, e.g. "200g flour" or "2 eggs")</label>
+    <div class="rs-card-tear" aria-hidden="true"></div>
+    <div class="rs-index-card">
+      <div class="rs-field">
+        <label for="recipe-input">Ingredients <span class="rs-hint">one per line, e.g. "200g flour" or "2 eggs"</span></label>
         <textarea id="recipe-input" rows="8" placeholder="200g flour&#10;2 eggs&#10;1/2 cup sugar&#10;1 tsp vanilla extract&#10;a pinch of salt"></textarea>
       </div>
 
-      <div class="row">
-        <div class="stack" style="flex: 1; min-width: 8rem;">
+      <div class="rs-servings-row">
+        <div class="rs-stepper-group">
           <label for="original-servings">Original servings</label>
-          <input type="number" id="original-servings" min="1" step="any" value="4" />
+          <div class="rs-stepper">
+            <button type="button" class="rs-step-btn" data-target="original-servings" data-dir="-1" aria-label="Decrease original servings">&minus;</button>
+            <input type="number" id="original-servings" min="1" step="any" value="4" inputmode="decimal" />
+            <button type="button" class="rs-step-btn" data-target="original-servings" data-dir="1" aria-label="Increase original servings">&plus;</button>
+          </div>
         </div>
-        <div class="stack" style="flex: 1; min-width: 8rem;">
+        <div class="rs-arrow-divider" aria-hidden="true">&rarr;</div>
+        <div class="rs-stepper-group">
           <label for="target-servings">Target servings</label>
-          <input type="number" id="target-servings" min="1" step="any" value="8" />
+          <div class="rs-stepper">
+            <button type="button" class="rs-step-btn" data-target="target-servings" data-dir="-1" aria-label="Decrease target servings">&minus;</button>
+            <input type="number" id="target-servings" min="1" step="any" value="8" inputmode="decimal" />
+            <button type="button" class="rs-step-btn" data-target="target-servings" data-dir="1" aria-label="Increase target servings">&plus;</button>
+          </div>
         </div>
       </div>
 
-      <button id="scale-btn" class="btn">Scale recipe</button>
+      <button id="scale-btn" class="rs-scale-btn">Scale the recipe</button>
 
-      <div id="result-wrap" class="stack" hidden>
-        <h2>Scaled recipe (&times;<span id="factor-label"></span>)</h2>
-        <ul id="result-list" class="rs-result-list mono"></ul>
-        <p id="parse-warnings" class="muted" style="font-size: 0.85rem;"></p>
+      <div class="rs-perforation" aria-hidden="true"></div>
+
+      <div id="result-wrap" hidden>
+        <div class="rs-factor-badge">
+          <span class="rs-factor-eyebrow">Scale factor</span>
+          <span class="rs-factor-number">&times;<span id="factor-label"></span></span>
+        </div>
+        <h2 class="rs-result-title">Your scaled ingredients</h2>
+        <ul id="result-list" class="rs-result-list"></ul>
+        <p id="parse-warnings" class="rs-warning"></p>
       </div>
     </div>
   </main>
-  <footer class="site">
+  <footer class="rs-footer">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
   <script src="app.js"></script>

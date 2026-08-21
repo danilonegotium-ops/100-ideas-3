@@ -11,51 +11,55 @@
   <header class="site">
     <a class="home" href="/">&larr; more tools</a>
   </header>
+
   <main class="wrap">
-    <h1>Minimalist Fasting Tracker</h1>
-    <p class="tagline">A clean, no-ads timer for people doing intermittent fasting.</p>
-
-    <div class="card stack fade-in">
-      <div id="setupView" class="stack">
-        <div>
-          <label for="protocolSelect">Fasting protocol</label>
-          <select id="protocolSelect">
-            <option value="16:8">16:8 — 16h fast, 8h eating window</option>
-            <option value="18:6">18:6 — 18h fast, 6h eating window</option>
-            <option value="20:4">20:4 — 20h fast, 4h eating window</option>
-            <option value="custom">Custom</option>
-          </select>
-        </div>
-        <div id="customField" style="display:none;">
-          <label for="customHours">Custom fast length (hours)</label>
-          <input id="customHours" type="number" min="1" max="72" step="1" value="16" />
-        </div>
-        <button id="startBtn" type="button">Start fast</button>
-      </div>
-
-      <div id="activeView" class="stack" style="display:none; text-align:center;">
-        <div class="ring-wrap">
-          <svg id="progressRing" viewBox="0 0 200 200" width="220" height="220">
-            <circle class="ring-track" cx="100" cy="100" r="88" />
-            <circle id="ringProgress" class="ring-progress" cx="100" cy="100" r="88" />
-          </svg>
-          <div class="ring-center">
-            <div id="ringTime" class="ring-time mono">00:00:00</div>
-            <div id="ringLabel" class="muted" style="font-size:0.8rem;">elapsed</div>
-          </div>
-        </div>
-        <div id="statusText" class="muted"></div>
-        <button id="endBtn" type="button" class="secondary-btn">End fast</button>
-      </div>
-
-      <div id="historySection" class="stack">
-        <h2>History</h2>
-        <div id="historyList" class="stack"></div>
-      </div>
+    <div class="masthead">
+      <h1>Minimalist Fasting Tracker</h1>
+      <p class="tagline">A clean, no-ads timer for people doing intermittent fasting.</p>
     </div>
+
+    <section id="setupView">
+      <div class="field field--select">
+        <label for="protocolSelect">Fasting protocol</label>
+        <select id="protocolSelect">
+          <option value="16:8">16:8 — 16h fast, 8h eating window</option>
+          <option value="18:6">18:6 — 18h fast, 6h eating window</option>
+          <option value="20:4">20:4 — 20h fast, 4h eating window</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div id="customField" class="field" style="display:none;">
+        <label for="customHours">Custom fast length (hours)</label>
+        <input id="customHours" type="number" min="1" max="72" step="1" value="16" />
+      </div>
+      <button id="startBtn" type="button" class="btn-start">Start fast</button>
+    </section>
+
+    <section id="activeView" class="timer-stage" style="display:none;">
+      <div id="flapPlate" class="flap-plate">
+        <span id="timerDigits" class="flap-digits">00:00:00</span>
+        <span id="timerLabel" class="flap-label">elapsed</span>
+      </div>
+      <div class="runway">
+        <div id="runwayFill" class="runway-fill"></div>
+      </div>
+      <div class="runway-meta">
+        <span id="statusText" class="status-text" aria-live="polite"></span>
+        <span id="percentReadout" class="percent-readout">000%</span>
+      </div>
+      <button id="endBtn" type="button" class="btn-end">End fast</button>
+    </section>
+
+    <section id="historySection" class="manifest">
+      <div class="manifest-head">
+        <h2>Log</h2>
+      </div>
+      <div id="historyList" class="manifest-list"></div>
+    </section>
   </main>
+
   <footer class="site">
-    <span>Built solo. No tracking, no signup required.</span>
+    <span>No tracking &middot; no signup required</span>
   </footer>
   <script src="app.js"></script>
 </body>

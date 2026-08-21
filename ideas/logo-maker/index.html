@@ -1,31 +1,38 @@
 <!doctype html>
-<html lang="en" data-accent="amber">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Logo Maker for Side Projects</title>
-  <meta name="description" content="A very simple, no-fuss logo generator for people who need something fast and clean. Type a name, pick a style and color, download a real SVG." />
+  <meta name="description" content="A very simple, no-fuss logo generator for people who need something fast and clean. Type a name, pick a style and color, browse a full proof sheet of variants, download a real SVG." />
   <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="tier2.css" />
 </head>
 <body>
-  <canvas class="mesh-bg-canvas" data-mesh-bg="rgba(251,191,36,0.5),rgba(255,138,101,0.3),rgba(167,139,250,0.25)"></canvas>
-  <header class="site">
+  <header class="masthead">
+    <div class="lockup">
+      <span class="lockup-mono">LOGO</span><span class="lockup-serif">Studio</span>
+    </div>
     <a class="home" href="/">&larr; more tools</a>
   </header>
+
   <main class="wrap">
-    <h1>Logo Maker for Side Projects</h1>
-    <p class="tagline">A very simple, no-fuss logo generator for people who need something fast and clean.</p>
+    <section class="hero">
+      <p class="eyebrow">Type specimen generator</p>
+      <h1>Type a name.<br />Get a <em>mark</em>.</h1>
+      <p class="tagline">A very simple, no-fuss logo generator for people who need something fast and clean.
+        Configure once, then browse a full proof sheet of variants below.</p>
+    </section>
 
-    <div class="gradient-border">
-      <div class="card stack">
-        <div class="stack">
-          <div>
-            <label for="brandName">Project / brand name</label>
-            <input id="brandName" type="text" maxlength="40" placeholder="e.g. Acme Labs" value="Acme Labs" />
-          </div>
+    <section class="studio-grid">
+      <div class="panel">
+        <h2 class="panel-title">Specification</h2>
+        <div class="field">
+          <label for="brandName">Project / brand name</label>
+          <input id="brandName" type="text" maxlength="40" placeholder="e.g. Acme Labs" value="Acme Labs" />
+        </div>
 
-          <div>
+        <div class="field-row">
+          <div class="field">
             <label for="styleSelect">Style</label>
             <select id="styleSelect">
               <option value="monogram">Monogram in shape</option>
@@ -34,7 +41,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="field">
             <label for="shapeSelect">Shape</label>
             <select id="shapeSelect">
               <option value="circle">Circle</option>
@@ -42,31 +49,46 @@
               <option value="square">Rounded square</option>
             </select>
           </div>
+        </div>
 
-          <div>
-            <label for="colorInput">Color</label>
-            <div class="row" style="align-items:center">
-              <input id="colorInput" type="color" value="#34d399" style="width:64px; padding:0.25rem; flex:none" />
-              <span id="colorHex" class="mono muted">#34d399</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <button id="regenerateBtn" type="button">🎲 Randomize</button>
-            <button id="downloadBtn" type="button" class="btn-glow">⬇ Download SVG</button>
+        <div class="field">
+          <label for="colorInput">Ink color</label>
+          <div class="color-row">
+            <input id="colorInput" type="color" value="#2247d6" />
+            <span id="colorHex" class="mono">#2247d6</span>
+            <div class="swatch-strip" id="swatchStrip" aria-label="Preset ink colors"></div>
           </div>
         </div>
 
-        <div id="logoPreview" class="logo-preview" data-spotlight aria-live="polite"></div>
+        <div class="actions">
+          <button id="regenerateBtn" type="button" class="btn-ghost">Shuffle spec</button>
+          <button id="downloadBtn" type="button" class="btn-primary">Download SVG</button>
+        </div>
 
-        <p class="muted" style="font-size:0.8rem">Everything renders client-side as a real SVG — nothing is uploaded anywhere.</p>
+        <p class="fineprint">Everything renders client-side as a real SVG — nothing is uploaded anywhere.</p>
       </div>
-    </div>
+
+      <div class="panel panel-preview">
+        <h2 class="panel-title">Primary proof</h2>
+        <div id="logoPreview" class="proof-frame" aria-live="polite"></div>
+        <p class="proof-caption mono" id="primaryCaption">Monogram in shape · Circle</p>
+      </div>
+    </section>
+
+    <section class="proof-sheet">
+      <div class="proof-sheet-head">
+        <p class="eyebrow">Proof sheet</p>
+        <h2>Browse the variants</h2>
+      </div>
+      <div id="variantGrid" class="variant-grid"></div>
+    </section>
   </main>
+
   <footer class="site">
     <span>Built solo. No tracking, no signup required.</span>
   </footer>
-  <script src="tier2.js" defer></script>
+
   <script src="app.js"></script>
+  <script src="gallery.js"></script>
 </body>
 </html>

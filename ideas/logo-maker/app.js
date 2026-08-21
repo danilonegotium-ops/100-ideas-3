@@ -4,9 +4,12 @@
  * free of DOM references so they can be sanity-checked with plain `node`.
  */
 
+/* Curated "studio ink" palette — used by Randomize, the swatch strip, and
+ * the proof-sheet gallery, so every generated mark stays on-brand with the
+ * app's own type-specimen identity instead of generic bright pastels. */
 var PRESET_COLORS = [
-  '#34d399', '#60a5fa', '#f472b6', '#fbbf24', '#a78bfa',
-  '#fb923c', '#22d3ee', '#f87171', '#4ade80', '#818cf8'
+  '#2247d6', '#c1502a', '#3f6b3a', '#c08a28', '#7a3b69',
+  '#1e7f7a', '#a23b3b', '#3d3a8c', '#6b7a2e', '#4a6fa5'
 ];
 var STYLES = ['monogram', 'wordmark', 'badge'];
 var SHAPES = ['circle', 'hexagon', 'square'];

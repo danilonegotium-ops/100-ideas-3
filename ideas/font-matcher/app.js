@@ -96,47 +96,65 @@ function initApp() {
   var resultsView = document.getElementById("fm-results-view");
   var resultsList = document.getElementById("fm-results-list");
   var retakeBtn = document.getElementById("fm-retake");
+  var eyebrowEl = document.getElementById("fm-eyebrow");
+  var countEl = document.querySelector(".results-count");
 
-  // Load every candidate font up front so results render instantly once matched.
+  // Load every candidate font up front so results render instantly once
+  // matched. This is the app's one deliberate external request; the same
+  // link also covers the two families (Playfair Display, Inter) the UI
+  // chrome itself uses, so no second font-loading mechanism is introduced.
   var fontsLink = document.createElement("link");
   fontsLink.rel = "stylesheet";
   fontsLink.href = buildGoogleFontsHref(FONTS);
   document.head.appendChild(fontsLink);
 
+  if (eyebrowEl) {
+    eyebrowEl.textContent = "Specimen catalog · " + FONTS.length + " typefaces";
+  }
+
   function renderQuestions() {
     questionsEl.innerHTML = "";
     QUESTIONS.forEach(function (q, qIndex) {
-      var fieldset = document.createElement("fieldset");
-      fieldset.style.border = "1px solid var(--border)";
-      fieldset.style.borderRadius = "8px";
-      fieldset.style.padding = "0.9rem 1rem";
+      var item = document.createElement("fieldset");
+      item.className = "q-item";
+
+      var num = document.createElement("span");
+      num.className = "q-num";
+      num.setAttribute("aria-hidden", "true");
+      num.textContent = String(qIndex + 1).padStart(2, "0");
+      item.appendChild(num);
+
+      var body = document.createElement("div");
+      body.className = "q-body";
 
       var legend = document.createElement("legend");
-      legend.textContent = (qIndex + 1) + ". " + q.prompt;
-      legend.style.padding = "0 0.4rem";
-      fieldset.appendChild(legend);
+      legend.className = "q-prompt";
+      legend.textContent = q.prompt;
+      body.appendChild(legend);
 
-      q.options.forEach(function (opt, optIndex) {
+      var optionsWrap = document.createElement("div");
+      optionsWrap.className = "q-options";
+
+      q.options.forEach(function (opt) {
         var optLabel = document.createElement("label");
-        optLabel.style.display = "flex";
-        optLabel.style.alignItems = "center";
-        optLabel.style.gap = "0.5rem";
-        optLabel.style.margin = optIndex === 0 ? "0" : "0.4rem 0 0";
-        optLabel.style.color = "var(--text)";
-        optLabel.style.cursor = "pointer";
+        optLabel.className = "stamp-option";
 
         var input = document.createElement("input");
         input.type = "radio";
         input.name = "q-" + q.dim;
         input.value = opt.value;
-        input.style.width = "auto";
+
+        var text = document.createElement("span");
+        text.textContent = opt.label;
 
         optLabel.appendChild(input);
-        optLabel.appendChild(document.createTextNode(opt.label));
-        fieldset.appendChild(optLabel);
+        optLabel.appendChild(text);
+        optionsWrap.appendChild(optLabel);
       });
 
-      questionsEl.appendChild(fieldset);
+      body.appendChild(optionsWrap);
+      item.appendChild(body);
+      questionsEl.appendChild(item);
     });
   }
 
@@ -152,53 +170,78 @@ function initApp() {
   function renderResults(answers) {
     var ranked = rankFonts(answers, FONTS).slice(0, 4);
     resultsList.innerHTML = "";
+    if (countEl) countEl.textContent = "Top " + ranked.length + " of " + FONTS.length;
+
     ranked.forEach(function (entry, i) {
-      var card = document.createElement("div");
-      card.className = "font-result";
-      // Surface the tilt/spotlight effects on the visual result cards: the
-      // top match gets the cursor-follow spotlight (it's the "answer"), and
-      // the top few get a subtle 3D tilt since these are the side-by-side
-      // typography samples that are the whole point of this tool.
-      if (i === 0) card.setAttribute("data-spotlight", "");
-      if (i < 3) card.setAttribute("data-tilt", "");
+      var family = "'" + entry.font.family + "', " + entry.font.category;
+      var card = document.createElement("article");
+      card.className = "specimen-card";
+      // Staggered reveal, matching the .fade-in cadence used elsewhere in
+      // this project but authored fresh for this app's own CSS.
+      card.style.animationDelay = (i * 90) + "ms";
 
-      var title = document.createElement("h3");
-      title.textContent = (i + 1) + ". " + entry.font.family;
-      title.style.margin = "0 0 0.4rem";
+      var head = document.createElement("div");
+      head.className = "specimen-head";
 
-      var sample = document.createElement("p");
-      sample.className = "font-sample";
-      sample.style.fontFamily = "'" + entry.font.family + "', sans-serif";
-      sample.textContent = "The quick brown fox jumps over the lazy dog";
+      var no = document.createElement("span");
+      no.className = "specimen-no";
+      no.textContent = "No. " + String(i + 1).padStart(2, "0");
+      head.appendChild(no);
+
+      if (i === 0) {
+        var badge = document.createElement("span");
+        badge.className = "stamp-badge";
+        badge.textContent = "Best match";
+        head.appendChild(badge);
+      }
+      card.appendChild(head);
+
+      var familyLabel = document.createElement("p");
+      familyLabel.className = "specimen-family";
+      familyLabel.textContent = entry.font.family + " — " + entry.font.category;
+      card.appendChild(familyLabel);
+
+      var displayLabel = document.createElement("p");
+      displayLabel.className = "specimen-scale-label";
+      displayLabel.textContent = "Display";
+      card.appendChild(displayLabel);
+
+      var display = document.createElement("p");
+      display.className = "specimen-display";
+      display.style.fontFamily = family;
+      display.textContent = "The quick brown fox";
+      card.appendChild(display);
+
+      var bodyLabel = document.createElement("p");
+      bodyLabel.className = "specimen-scale-label";
+      bodyLabel.textContent = "Text";
+      card.appendChild(bodyLabel);
+
+      var body = document.createElement("p");
+      body.className = "specimen-body";
+      body.style.fontFamily = family;
+      body.textContent = "The quick brown fox jumps over the lazy dog, showing how " + entry.font.family + " reads as running text.";
+      card.appendChild(body);
 
       var reason = document.createElement("p");
-      reason.className = "muted";
-      reason.style.margin = "0.4rem 0";
+      reason.className = "match-reason";
       reason.textContent = generateMatchReason(answers, entry.font);
+      card.appendChild(reason);
 
       var specimenLink = document.createElement("a");
+      specimenLink.className = "specimen-link";
       specimenLink.href = fontSpecimenUrl(entry.font.family);
       specimenLink.target = "_blank";
       specimenLink.rel = "noopener noreferrer";
       specimenLink.textContent = "View " + entry.font.family + " on Google Fonts ↗";
-
-      card.appendChild(title);
-      card.appendChild(sample);
-      card.appendChild(reason);
       card.appendChild(specimenLink);
+
       resultsList.appendChild(card);
     });
 
     form.hidden = true;
     resultsView.hidden = false;
-
-    // Results are created after tier2.js's own DOMContentLoaded autoInit()
-    // pass, so wire up the spotlight/tilt effects on these specific cards
-    // manually. Degrades silently if tier2.js didn't load for any reason.
-    if (typeof Tier2 !== "undefined") {
-      Tier2.initSpotlight(resultsList);
-      Tier2.initTilt(resultsList);
-    }
+    resultsView.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   form.addEventListener("submit", function (e) {

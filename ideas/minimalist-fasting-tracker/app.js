@@ -7,8 +7,6 @@
 
 var STORAGE_KEY = 'minimalist-fasting-tracker-v1';
 var MAX_HISTORY = 50;
-var RING_RADIUS = 88;
-var RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 function getProtocolHours(protocol, customHours) {
   if (protocol === '16:8') return 16;
@@ -27,20 +25,25 @@ function computeRemainingMs(startMs, fastHours, nowMs) {
   return goalMs - computeElapsedMs(startMs, nowMs);
 }
 
-function computeRingPercent(startMs, fastHours, nowMs) {
+/* Progress toward the fast's goal length, 0-100, clamped at 100 once the
+ * goal is reached (the caller decides how to represent "overtime" beyond
+ * that — this function never reports more than a full runway). */
+function computeProgressPercent(startMs, fastHours, nowMs) {
   var goalMs = fastHours * 3600000;
   if (goalMs <= 0) return 100;
   var elapsed = computeElapsedMs(startMs, nowMs);
   return Math.min(100, (elapsed / goalMs) * 100);
 }
 
-function computeStrokeDashoffset(percent, circumference) {
-  var clamped = Math.max(0, Math.min(100, percent));
-  return circumference * (1 - clamped / 100);
-}
-
 function pad2(n) {
   return n < 10 ? '0' + n : String(n);
+}
+
+function pad3(n) {
+  n = Math.max(0, Math.min(999, Math.round(n)));
+  if (n < 10) return '00' + n;
+  if (n < 100) return '0' + n;
+  return String(n);
 }
 
 function formatHMS(ms) {
@@ -95,13 +98,13 @@ if (typeof document !== 'undefined') {
     var customHoursInput = document.getElementById('customHours');
     var startBtn = document.getElementById('startBtn');
     var endBtn = document.getElementById('endBtn');
-    var ringProgress = document.getElementById('ringProgress');
-    var ringTime = document.getElementById('ringTime');
-    var ringLabel = document.getElementById('ringLabel');
+    var flapPlate = document.getElementById('flapPlate');
+    var timerDigits = document.getElementById('timerDigits');
+    var timerLabel = document.getElementById('timerLabel');
+    var runwayFill = document.getElementById('runwayFill');
+    var percentReadout = document.getElementById('percentReadout');
     var statusText = document.getElementById('statusText');
     var historyList = document.getElementById('historyList');
-
-    ringProgress.style.strokeDasharray = String(RING_CIRCUMFERENCE);
 
     var tickHandle = null;
 
@@ -130,18 +133,21 @@ if (typeof document !== 'undefined') {
     function renderHistory() {
       historyList.innerHTML = '';
       if (!state.history.length) {
-        historyList.innerHTML = '<p class="muted" style="font-size:0.85rem;">No past fasts yet.</p>';
+        historyList.innerHTML = '<p class="manifest-empty">No past fasts yet.</p>';
         return;
       }
       state.history.forEach(function (entry) {
         var row = document.createElement('div');
-        row.className = 'history-item';
+        row.className = 'history-row';
         var startedDate = new Date(entry.startedAt);
         var dateLabel = startedDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        var badge = entry.goalMet ? '✓ goal met' : 'ended early';
+        var dotClass = entry.goalMet ? 'met' : 'early';
+        var dotGlyph = entry.goalMet ? '●' : '○';
+        var label = entry.goalMet ? 'goal met' : 'ended early';
         row.innerHTML =
-          '<span>' + dateLabel + ' &middot; ' + entry.protocol + '</span>' +
-          '<span class="muted">' + formatShort(entry.durationMs) + ' &middot; ' + badge + '</span>';
+          '<span class="history-when">' + dateLabel + ' &middot; ' + entry.protocol + '</span>' +
+          '<span class="history-meta"><span class="history-dot ' + dotClass + '">' + dotGlyph + '</span>' +
+          formatShort(entry.durationMs) + ' &middot; ' + label + '</span>';
         historyList.appendChild(row);
       });
     }
@@ -150,6 +156,9 @@ if (typeof document !== 'undefined') {
       if (!state.active) {
         setupView.style.display = '';
         activeView.style.display = 'none';
+        runwayFill.style.width = '0%';
+        runwayFill.classList.remove('overtime');
+        flapPlate.classList.remove('overtime');
         if (tickHandle) { clearInterval(tickHandle); tickHandle = null; }
         return;
       }
@@ -160,19 +169,20 @@ if (typeof document !== 'undefined') {
         var now = Date.now();
         var elapsed = computeElapsedMs(state.active.startedAt, now);
         var remaining = computeRemainingMs(state.active.startedAt, state.active.fastHours, now);
-        var percent = computeRingPercent(state.active.startedAt, state.active.fastHours, now);
-        var offset = computeStrokeDashoffset(percent, RING_CIRCUMFERENCE);
-        ringProgress.style.strokeDashoffset = String(offset);
+        var percent = computeProgressPercent(state.active.startedAt, state.active.fastHours, now);
+
+        timerDigits.textContent = formatHMS(elapsed);
+        timerLabel.textContent = 'elapsed';
+        runwayFill.style.width = percent + '%';
+        percentReadout.textContent = pad3(percent) + '%';
 
         if (remaining > 0) {
-          ringProgress.classList.remove('overtime');
-          ringTime.textContent = formatHMS(elapsed);
-          ringLabel.textContent = 'elapsed';
+          flapPlate.classList.remove('overtime');
+          runwayFill.classList.remove('overtime');
           statusText.textContent = formatHMS(remaining) + ' until eating window opens';
         } else {
-          ringProgress.classList.add('overtime');
-          ringTime.textContent = formatHMS(elapsed);
-          ringLabel.textContent = 'elapsed';
+          flapPlate.classList.add('overtime');
+          runwayFill.classList.add('overtime');
           statusText.textContent = 'Eating window open — fasted ' + formatShort(elapsed) + ' so far';
         }
       }

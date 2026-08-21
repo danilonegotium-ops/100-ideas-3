@@ -55,6 +55,21 @@ function initApp() {
   var flashTipEl = document.getElementById("erg-flash-tip");
   var flashDismissBtn = document.getElementById("erg-flash-dismiss");
 
+  // Bespoke-theme elements: the breathing ring is a manufactured visual
+  // centerpiece (this app otherwise has none) that mirrors the countdown,
+  // and the segmented control is a styled front-end for the real <select>
+  // (kept in the DOM, visually hidden) so all existing .value reads below
+  // continue to work unmodified.
+  var stageEl = document.getElementById("erg-stage");
+  var ringProgressEl = document.getElementById("erg-ring-progress");
+  var statusChipEl = document.getElementById("erg-status-chip");
+  var statusChipLabelEl = document.getElementById("erg-status-chip-label");
+  var intervalGroupEl = document.getElementById("erg-interval-group");
+  var segmentButtons = intervalGroupEl
+    ? Array.prototype.slice.call(intervalGroupEl.querySelectorAll(".segment"))
+    : [];
+  var RING_CIRCUMFERENCE = 2 * Math.PI * 90;
+
   var running = false;
   var intervalMs = minutesToMs(intervalSelect.value);
   var nextFireAt = null;
@@ -63,6 +78,34 @@ function initApp() {
   var lastTipIndex = -1;
 
   var notificationsSupported = "Notification" in window;
+
+  function setRingProgress(fraction) {
+    if (!ringProgressEl) return;
+    var clamped = Math.max(0, Math.min(1, fraction));
+    ringProgressEl.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - clamped));
+  }
+
+  function syncSegmentedControl() {
+    segmentButtons.forEach(function (btn) {
+      var isSelected = btn.dataset.value === intervalSelect.value;
+      btn.setAttribute("aria-checked", isSelected ? "true" : "false");
+    });
+  }
+
+  function setSegmentedDisabled(disabled) {
+    segmentButtons.forEach(function (btn) {
+      btn.disabled = disabled;
+      btn.setAttribute("aria-disabled", disabled ? "true" : "false");
+    });
+  }
+
+  segmentButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (intervalSelect.disabled) return;
+      intervalSelect.value = btn.dataset.value;
+      syncSegmentedControl();
+    });
+  });
 
   function currentPermission() {
     return notificationsSupported ? Notification.permission : "unsupported";
@@ -75,19 +118,23 @@ function initApp() {
   function updateCountdownDisplay() {
     if (!running || nextFireAt === null) {
       countdownEl.textContent = "--:--";
+      setRingProgress(0);
       return;
     }
     var remaining = nextFireAt - Date.now();
     countdownEl.textContent = formatCountdown(remaining);
+    setRingProgress(1 - remaining / intervalMs);
   }
 
   function showFlash(tip) {
     flashTipEl.textContent = tip;
     flashEl.hidden = false;
+    if (stageEl) stageEl.classList.add("is-flashing");
   }
 
   function hideFlash() {
     flashEl.hidden = true;
+    if (stageEl) stageEl.classList.remove("is-flashing");
   }
 
   function fireReminder() {
@@ -127,6 +174,10 @@ function initApp() {
     startBtn.disabled = true;
     stopBtn.disabled = false;
     intervalSelect.disabled = true;
+    setSegmentedDisabled(true);
+    if (stageEl) stageEl.classList.add("is-running");
+    if (statusChipEl) statusChipEl.classList.add("is-active");
+    if (statusChipLabelEl) statusChipLabelEl.textContent = "Active";
 
     if (notificationsSupported && Notification.permission === "default") {
       Notification.requestPermission().then(updatePermissionStatus);
@@ -147,12 +198,18 @@ function initApp() {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     intervalSelect.disabled = false;
+    setSegmentedDisabled(false);
+    if (stageEl) stageEl.classList.remove("is-running", "is-flashing");
+    if (statusChipEl) statusChipEl.classList.remove("is-active");
+    if (statusChipLabelEl) statusChipLabelEl.textContent = "Paused";
   }
 
   startBtn.addEventListener("click", start);
   stopBtn.addEventListener("click", stop);
   flashDismissBtn.addEventListener("click", hideFlash);
 
+  syncSegmentedControl();
+  setRingProgress(0);
   updatePermissionStatus();
   updateCountdownDisplay();
 }
