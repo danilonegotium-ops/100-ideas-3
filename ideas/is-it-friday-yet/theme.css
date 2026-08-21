@@ -197,6 +197,7 @@ body {
   border-radius: 10px;
   padding: 2.1rem 1.25rem 1.85rem;
   position: relative;
+  overflow: hidden;
   box-shadow:
     inset 0 0 0 1px var(--bezel-highlight),
     inset 0 2px 26px rgba(0, 0, 0, 0.6),
@@ -225,6 +226,27 @@ body {
     0 0 46px -12px rgba(var(--stop-rgb), 0.3),
     0 30px 60px -20px rgba(0, 0, 0, 0.75);
 }
+
+/* Cursor-follow glow, hand-rolled to match the amber backlight — same
+   pointer-events:none + mix-blend-mode trick as .crt-overlay above, so it
+   adds light over the panel instead of covering the text underneath. */
+.spotlight {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 340px;
+  height: 340px;
+  margin: -170px 0 0 -170px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(var(--amber-rgb), 0.4), transparent 70%);
+  filter: blur(24px);
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease, left 120ms ease-out, top 120ms ease-out;
+}
+.spotlight.is-active { opacity: 1; }
 
 .board-answer-label {
   font-family: var(--font-mono);

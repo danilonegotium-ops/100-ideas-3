@@ -196,6 +196,28 @@ function scrambleText(el, newText) {
   }, frameMs);
 }
 
+/**
+ * Cursor-follow spotlight glow over the board panel. Purely decorative, so
+ * it's skipped entirely under prefers-reduced-motion rather than just
+ * disabling its transitions.
+ */
+function setupSpotlight(board) {
+  if (prefersReducedMotion()) return;
+
+  const spot = document.createElement("div");
+  spot.className = "spotlight";
+  spot.setAttribute("aria-hidden", "true");
+  board.appendChild(spot);
+
+  board.addEventListener("mouseenter", () => spot.classList.add("is-active"));
+  board.addEventListener("mouseleave", () => spot.classList.remove("is-active"));
+  board.addEventListener("mousemove", (event) => {
+    const rect = board.getBoundingClientRect();
+    spot.style.left = `${event.clientX - rect.left}px`;
+    spot.style.top = `${event.clientY - rect.top}px`;
+  });
+}
+
 function render(date) {
   const status = getFridayStatus(date);
 
@@ -224,6 +246,7 @@ function render(date) {
 // Only run DOM code in a real browser/document context, so this file can
 // still be `require`d / syntax-checked from Node for the pure functions.
 if (typeof document !== "undefined") {
+  setupSpotlight(document.getElementById("board"));
   render(new Date());
   // Re-check at local midnight-ish cadence so a tab left open flips over.
   setInterval(() => render(new Date()), 60 * 1000);
